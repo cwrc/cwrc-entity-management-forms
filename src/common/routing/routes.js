@@ -41,7 +41,7 @@ function routingFnCreator (useFor: 'sidebar' | 'routing' | 'meta' | 'all' = 'all
 	const [AsyncDashoard, AsyncLogin, AsyncPersonEdit, AsyncLinks, AsyncNotFound] = [
 		'Dashboard',
 		'Login',
-		'PersonEdit',
+		'EntityForm/Person',
 		'Links',
 		'NotFound'
 	].map(a => asyncComponentCreator(a))

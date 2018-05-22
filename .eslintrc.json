@@ -27,6 +27,8 @@
 		"no-tabs": 0,
 		"no-unused-vars": 1,
 		"indent": [2, "tab"],
-		"jsx-a11y/label-has-for": 0
+		"jsx-a11y/label-has-for": 0,
+		"react/jsx-indent": [2, "tab"],
+		"react/no-deprecated": 0
 	}
 }

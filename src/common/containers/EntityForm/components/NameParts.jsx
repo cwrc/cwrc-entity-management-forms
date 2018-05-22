@@ -9,13 +9,12 @@ import {
 } from 'semantic-ui-react'
 import {Field, FieldArray, FormSection} from 'redux-form'
 import {connect} from 'react-redux'
-import {InputField, DropdownComponent} from './shared'
+import {InputField, DropdownComponent} from './formControls'
 
-class Names extends FormSection<Props, State> {
-	static defaultProps = {
-		name: 'address'
-	}
+class NameParts extends FormSection<Props, State> {
+	static defaultProps = {}
 	render () {
+		const nameOptions = this.props.nameOptions
 		const renderNameComponents = ({fields, meta: {touched, error, submitFailed}}: any) => {
 			if (fields.length === 0) fields.push({})
 			return (
@@ -62,13 +61,8 @@ class Names extends FormSection<Props, State> {
 			{key: 'en', text: 'English', value: 'en'},
 			{key: 'fr', text: 'French', value: 'fr'}
 		]
-		const nameOptions = [
-			{key: 'first', text: 'First', value: 'first'},
-			{key: 'middle', text: 'Middle', value: 'middle'},
-			{key: 'last', text: 'Last', value: 'last'}
-		]
 
-		return (<FieldArray name="nameComponents" component={renderNameComponents}/>)
+		return (<FieldArray name={name} component={renderNameComponents}/>)
 	}
 }
 
@@ -76,4 +70,4 @@ const mapStateToProps = state => ({})
 
 const mapDispatchToProps = dispatch => ({})
 
-export default connect(mapStateToProps, mapDispatchToProps)(Names)
+export default connect(mapStateToProps, mapDispatchToProps)(NameParts)

@@ -47,3 +47,5 @@ src/server/config/ssl/server.*
 .idea
 
 .DS_Store
+
+.vscode

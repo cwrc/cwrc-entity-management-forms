@@ -8,7 +8,7 @@
   "Dashboard.p-2": "In progress.",
 
   "Person.title": "Create/Edit a Person",
-  "Person.identity": "Names",
+  "Person.identity": "Identity",
   "Person.identity.standard-name": "Standard Name",
   "Person.identity.components": "Parts",
   "Person.identity.variant-name": "Variant name(s)",

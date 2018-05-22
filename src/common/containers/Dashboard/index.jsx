@@ -8,7 +8,7 @@ const Dashboard = () => {
 	return (
 		<div>
 			<Helmet>
-				<title>Suicrux:Dashboardddddd</title>
+				<title>CWRC Dashboard</title>
 			</Helmet>
 			<Grid columns={1}>
 				<Grid.Row centered>

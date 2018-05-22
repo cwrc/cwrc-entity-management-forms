@@ -7,7 +7,7 @@ const PersonEdit = ({login, errors}: Props) => {
 	return (
 		<div>
 			<Helmet>
-				<title>CWRC:Person Edit</title>
+				<title>CWRC: Person Entity</title>
 			</Helmet>
 			<PersonForm />
 		</div>

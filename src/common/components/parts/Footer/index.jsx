@@ -2,7 +2,8 @@
  * @flow
  */
 import React from 'react'
-import {Grid, Header, Icon} from 'semantic-ui-react'
+import {Grid, Header} from 'semantic-ui-react'
+import Logo from 'components/elements/Logo'
 import {StyledFooter, StyledFooterInner} from './style'
 
 const Footer = () => {
@@ -12,9 +13,9 @@ const Footer = () => {
 				<Grid relaxed>
 					<Grid.Row verticalAlign="middle">
 						<Grid.Column width={12} mobile={16}>
-							<a href="https://github.com/Metnew/suicrux">
+							<a href="https://cwrc.ca">
 								<Header as="h3" inverted>
-									<Icon name="github" />
+									<Logo white={true} />
 									<Header.Content>
 										CWRC / CSÉC
 										<Header.Subheader>
