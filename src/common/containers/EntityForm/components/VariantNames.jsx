@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import {Field} from 'redux-form'
+import {Field, FieldArray} from 'redux-form'
 import {Segment, Grid, Button, Divider, Icon} from 'semantic-ui-react'
 import {DropdownComponent} from '../components/FormControls'
 import NameParts from '../components/NameParts'
@@ -54,7 +54,7 @@ const VariantNames = ({
 						</Grid.Column>
 					</Grid>
 					<Divider/>
-					<NameParts name={`${nameComponent}.nameParts`} nameOptions={nameOptions}/>
+					<FieldArray name={`${nameComponent}.parts`} nameOptions={nameOptions} component={NameParts}/>
 				</Segment>
 			))}
 		</Segment>

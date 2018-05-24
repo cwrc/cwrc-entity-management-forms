@@ -3,13 +3,11 @@ import React from 'react'
 
 import {Field} from 'redux-form'
 import {
-	Segment,
 	Grid,
-	Dropdown,
-	Button
+	Dropdown
 } from 'semantic-ui-react'
 
-import {InputField, DropdownComponent} from './FormControls'
+import {DropdownComponent} from './FormControls'
 
 import Moment from 'moment'
 import momentLocalizer from 'react-widgets-moment'
@@ -96,11 +94,11 @@ const DateComponent = ({
 					placeholder='Certainty'
 					component={DropdownComponent}/>
 			</Grid.Column>
-			<Grid.Column width={8}>
+			<Grid.Column width={6}>
 				<Field
-					width={8}
 					name={`${field}.note`}
-					component={InputField}
+					component="textarea"
+					rows={3}
 					placeholder="Note"/>
 			</Grid.Column>
 		</Grid.Row>

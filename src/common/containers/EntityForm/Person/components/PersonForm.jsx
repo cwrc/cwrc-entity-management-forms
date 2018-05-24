@@ -9,7 +9,7 @@ import {
 	Icon,
 	Segment,
 	Accordion,
-	TextArea
+	Rail
 } from 'semantic-ui-react'
 import {connect} from 'react-redux'
 import {reduxForm, Field, FieldArray} from 'redux-form'
@@ -22,6 +22,7 @@ import VariantNames from '../../components/VariantNames'
 import DateComponent from '../../components/DateComponent'
 import LanguageSelector from '../../components/LanguageSelector'
 import ProjectSelector from '../../components/ProjectSelector'
+import Values from '../../components/Values'
 
 import type {FormProps} from 'redux-form'
 
@@ -111,7 +112,8 @@ class PersonComponent extends Component<Props, State> {
 								<Field
 									width={10}
 									name={`${field}.value`}
-									component={TextArea}
+									component='textarea'
+									rows={3}
 									placeholder="Add your note here."/>
 							</Grid.Column>
 						</Grid.Row>
@@ -152,7 +154,8 @@ class PersonComponent extends Component<Props, State> {
 								<Field
 									width={10}
 									name={`${field}.value`}
-									component={TextArea}
+									component='textarea'
+									rows={3}
 									placeholder="Add your note here."/>
 							</Grid.Column>
 						</Grid.Row>
@@ -174,10 +177,10 @@ class PersonComponent extends Component<Props, State> {
 			return fields.map((field, index) => (
 				<Segment key={index} secondary>
 					<Grid>
-						<Grid.Column width={6}>
+						<Grid.Column width={8}>
 							<Field
 								label="Nationality"
-								name={`${field}.nationality`}
+								name={`${field}.value`}
 								placeholder="Nationality"
 								component={InputField}
 							/>
@@ -214,10 +217,10 @@ class PersonComponent extends Component<Props, State> {
 			return fields.map((field, index) => (
 				<Segment key={index} secondary>
 					<Grid>
-						<Grid.Column width={6}>
+						<Grid.Column width={8}>
 							<Field
 								label="Occupation"
-								name={`${field}.occupation`}
+								name={`${field}.value`}
 								placeholder="Occupation"
 								component={InputField}
 							/>
@@ -257,14 +260,14 @@ class PersonComponent extends Component<Props, State> {
 						<Segment>
 							<Field key="standard-name" required
 								placeholder="e.g. Last Name, First Name (for indexing purposes)"
-								name="standard-name"
+								name="standard.name"
 								label="Standard Name"
 								component={InputField}
 							/>
 							<Segment secondary>
 								<Header as="h4">Components</Header>
-								<LanguageSelector label="Language" name="standard-name-lang"/>
-								<NameParts name="standard" nameOptions={nameOptions}/>
+								<LanguageSelector label="Language" name="standard.lang"/>
+								<FieldArray name="standard.parts" component={NameParts} nameOptions={nameOptions}/>
 							</Segment>
 						</Segment>
 					),
@@ -279,7 +282,8 @@ class PersonComponent extends Component<Props, State> {
 							name="variants"
 							component={VariantNames}
 							variantOptions={variantOptions}
-							nameOptions={nameOptions}></FieldArray>
+							nameOptions={nameOptions}
+						/>
 					),
 					key: 'variantPanel'
 				}
@@ -319,7 +323,7 @@ class PersonComponent extends Component<Props, State> {
 									<Grid.Column width={4}>
 										<Field
 											label="Factuality"
-											name="factuality"
+											name="properties.factuality"
 											placeholder="Factuality"
 											options={factualityOptions}
 											component={DropdownComponent}
@@ -328,7 +332,7 @@ class PersonComponent extends Component<Props, State> {
 									<Grid.Column width={4}>
 										<Field
 											label='Certainty'
-											name='factuality_certainty'
+											name='properties.factuality_certainty'
 											placeholder='Certainty'
 											options={certaintyOptions}
 											component={DropdownComponent}/>
@@ -338,7 +342,7 @@ class PersonComponent extends Component<Props, State> {
 							<Segment secondary>
 								<Field
 									label="Gender"
-									name="gender"
+									name="properties.gender"
 									placeholder="Gender"
 									multiple
 									scrolling
@@ -346,8 +350,8 @@ class PersonComponent extends Component<Props, State> {
 									component={DropdownComponent}
 								/>
 							</Segment>
-							<FieldArray name="nationality" component={renderNationality}/>
-							<FieldArray name="occupation" component={renderOccupation}/>
+							<FieldArray name="properties.nationality" component={renderNationality}/>
+							<FieldArray name="properties.occupation" component={renderOccupation}/>
 						</Segment>
 					),
 					key: 'propPanel'
@@ -372,39 +376,44 @@ class PersonComponent extends Component<Props, State> {
 		const {handleSubmit, invalid, submitting} = this.props
 
 		return (
-			<Form onSubmit={handleSubmit} error={invalid}>
-				<Header as="h2">
-					<FormattedMessage id="Person.identity"/>
-				</Header>
+			<Segment>
+				<Rail attached position='left'>
+					<Values form='PERSON_FORM'/>
+				</Rail>
+				<Form onSubmit={handleSubmit} error={invalid}>
+					<Header as="h2">
+						<FormattedMessage id="Person.identity"/>
+					</Header>
 
-				<Accordion defaultActiveIndex={[0]} panels={NamePanels} exclusive={false}/>
+					<Accordion defaultActiveIndex={[0]} panels={NamePanels} exclusive={false}/>
 
-				<Header as="h2">
-					<FormattedMessage id="Person.description"/>
-				</Header>
+					<Header as="h2">
+						<FormattedMessage id="Person.description"/>
+					</Header>
 
-				<Accordion defaultActiveIndex={[2]} panels={DescriptionPanels} exclusive={false}/>
+					<Accordion defaultActiveIndex={[2]} panels={DescriptionPanels} exclusive={false}/>
 
-				<Header as="h2">
-					<FormattedMessage id="Person.sources"/>
-				</Header>
+					<Header as="h2">
+						<FormattedMessage id="Person.sources"/>
+					</Header>
 
-				<Field key="non_field_errors"
-					name="non_field_errors"
-					component={({meta: {error}}) => {
-						return error ? (
-							<Message error>
-								<Message.Header>{'Login failed :('}</Message.Header>
-								<p>{error}</p>
-							</Message>
-						) : null
-					}}
-				/>
+					<Field key="non_field_errors"
+						name="non_field_errors"
+						component={({meta: {error}}) => {
+							return error ? (
+								<Message error>
+									<Message.Header>{'Login failed :('}</Message.Header>
+									<p>{error}</p>
+								</Message>
+							) : null
+						}}
+					/>
 
-				<div style={{textAlign: 'center'}}>
-					<Button content="Submit" icon="sign in" loading={submitting}/>
-				</div>
-			</Form>
+					<div style={{textAlign: 'center'}}>
+						<Button content="Submit" icon="sign in" loading={submitting}/>
+					</div>
+				</Form>
+			</Segment>
 		)
 	}
 }
