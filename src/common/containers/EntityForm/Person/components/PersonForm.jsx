@@ -4,30 +4,26 @@ import {
 	Form,
 	Header,
 	Message,
+	Grid,
 	Button,
-	Divider,
+	Icon,
 	Segment,
-	Accordion
+	Accordion,
+	TextArea
 } from 'semantic-ui-react'
 import {connect} from 'react-redux'
 import {reduxForm, Field, FieldArray} from 'redux-form'
 import {FormattedMessage} from 'react-intl'
 
-import {InputField} from '../../components/formControls'
-import FieldRepeater from '../../components/fieldRepeater'
+import {InputField, DropdownComponent} from '../../components/FormControls'
+import FieldRepeater from '../../components/FieldRepeater'
 import NameParts from '../../components/NameParts'
 import VariantNames from '../../components/VariantNames'
-
-import Moment from 'moment'
-import momentLocalizer from 'react-widgets-moment'
-import DateTimePicker from 'react-widgets/lib/DateTimePicker'
+import DateComponent from '../../components/DateComponent'
+import LanguageSelector from '../../components/LanguageSelector'
+import ProjectSelector from '../../components/ProjectSelector'
 
 import type {FormProps} from 'redux-form'
-
-import 'react-widgets/dist/css/react-widgets.css'
-
-Moment.locale('en')
-momentLocalizer()
 
 const nameOptions = [
 	{key: 'forename', text: 'Forename', value: 'forename'},
@@ -56,41 +52,202 @@ const variantOptions = [
 	{key: 'historic', text: 'historic', value: 'historic'}
 ]
 
-const projectOptions = [
-	{key: 'ww', text: 'Women Writers', value: 'ww'},
-	{key: 'isicily', text: 'I.Sicily', value: 'isicily'},
-	{key: 'smith', text: 'Smith', value: 'smith'}
+const factualityOptions = [
+	{key: 'real', text: 'Real', value: 'real'},
+	{key: 'fake', text: 'Fake', value: 'fake'}
+]
+
+const certaintyOptions = [
+	{key: 'high', text: 'High', value: 'high'},
+	{key: 'medium', text: 'Medium', value: 'medium'},
+	{key: 'low', text: 'Low', value: 'low'},
+	{key: 'unknown', text: 'Unknown', value: 'unknown'}
+]
+
+const genderOptions = [
+	{key: 'cisgender', text: 'cisgender', value: 'cisgender'},
+	{key: 'ciswoman', text: 'ciswoman', value: 'ciswoman'},
+	{key: 'cisman', text: 'cisman', value: 'cisman'},
+	{key: 'woman', text: 'woman', value: 'woman'},
+	{key: 'man', text: 'man', value: 'man'},
+	{key: 'transgender', text: 'transgender', value: 'transgender'},
+	{key: 'transwoman', text: 'transwoman', value: 'transwoman'},
+	{key: 'transman', text: 'transman', value: 'transman'},
+	{key: 'androgynous', text: 'androgynous', value: 'androgynous'},
+	{key: 'genderqueer', text: 'genderqueer', value: 'genderqueer'},
+	{key: 'genderselfreported', text: 'genderselfreported', value: 'genderselfreported'}
 ]
 
 type Props = FormProps
 
 class PersonComponent extends Component<Props, State> {
 	render () {
-		const RepeatableNoteComponent = ({field}) =>
-			(
-				<Field
-					width={12}
-					name={`${field}.value`}
-					component={InputField}
-					placeholder="Add your note here."/>
-			)
+		const renderDescriptiveNote = ({fields, meta: {touched, error, submitFailed}}) => {
+			if (fields.length === 0) fields.push({})
+			return fields.map((field, index) => (
+				<Segment key={index} secondary>
+					<Grid>
+						<Grid.Row>
+							<Grid.Column width={12}>
+								<LanguageSelector label="Language" name={`${field}.lang`}/>
+							</Grid.Column>
+							<Grid.Column width={4}>
+								{index === 0 &&
+								<Button type="button" floated="right" circular size='mini' color='olive' onClick={() => fields.push({})}>
+									<Icon name='plus circle'/>
+									Add Another Description
+								</Button>
+								}
+								{index > 0 &&
+								<Button type="button" floated="right" circular size='mini' color='red' onClick={() => fields.remove(index)}>
+									<Icon name='minus circle'/>
+									Remove Description
+								</Button>
+								}
+							</Grid.Column>
+						</Grid.Row>
+						<Grid.Row>
+							<Grid.Column width={12}>
+								<Field
+									width={10}
+									name={`${field}.value`}
+									component={TextArea}
+									placeholder="Add your note here."/>
+							</Grid.Column>
+						</Grid.Row>
+					</Grid>
+				</Segment>
+			))
+		}
 
-		const RepeatableSameAsComponent = ({field}) =>
-			(
-				<Field
-					width={12}
-					name={`${field}.value`}
-					component={InputField}
-					placeholder="e.g., http://viaf.org/3323"/>
-			)
+		const renderProjectNote = ({fields, meta: {touched, error, submitFailed}}) => {
+			if (fields.length === 0) fields.push({})
+			return fields.map((field, index) => (
+				<Segment key={index} secondary>
+					<Grid>
+						<Grid.Row>
+							<Grid.Column width={6}>
+								<ProjectSelector label="Project" name={`${field}.project`}/>
+							</Grid.Column>
+							<Grid.Column width={6}>
+								<LanguageSelector label="Language" name={`${field}.lang`}/>
+							</Grid.Column>
+							<Grid.Column width={4}>
+								{index === 0 &&
+								<Button type="button" floated="right" circular size='mini' color='olive' onClick={() => fields.push({})}>
+									<Icon name='plus circle'/>
+									Add Another Project Note
+								</Button>
+								}
+								{index > 0 &&
+								<Button type="button" floated="right" circular size='mini' color='red' onClick={() => fields.remove(index)}>
+									<Icon name='minus circle'/>
+									Remove Project Note
+								</Button>
+								}
+							</Grid.Column>
+						</Grid.Row>
+						<Grid.Row>
+							<Grid.Column width={12}>
+								<Field
+									width={10}
+									name={`${field}.value`}
+									component={TextArea}
+									placeholder="Add your note here."/>
+							</Grid.Column>
+						</Grid.Row>
+					</Grid>
+				</Segment>
+			))
+		}
 
-		const renderDatePicker = ({input: {onChange, value}, showTime}) => (
-			<DateTimePicker
-				onChange={onChange} value={!value ? null : new Date(value)}
-				format="DD MMM YYYY"
-				time={showTime}
-			/>
+		const RepeatableSameAsComponent = ({field}) => (
+			<Field
+				width={12}
+				name={`${field}.value`}
+				component={InputField}
+				placeholder="e.g., http://viaf.org/3323"/>
 		)
+
+		const renderNationality = ({fields, meta: {touched, error, submitFailed}}) => {
+			if (fields.length === 0) fields.push({})
+			return fields.map((field, index) => (
+				<Segment key={index} secondary>
+					<Grid>
+						<Grid.Column width={6}>
+							<Field
+								label="Nationality"
+								name={`${field}.nationality`}
+								placeholder="Nationality"
+								component={InputField}
+							/>
+						</Grid.Column>
+						<Grid.Column width={4}>
+							<Field
+								label='Certainty'
+								name={`${field}.certainty`}
+								placeholder='Certainty'
+								options={certaintyOptions}
+								component={DropdownComponent}/>
+						</Grid.Column>
+						<Grid.Column width={4}>
+							{index === 0 &&
+							<Button type="button" floated="right" circular size='mini' color='olive' onClick={() => fields.push({})}>
+								<Icon name='plus circle'/>
+								Add Another Nationality
+							</Button>
+							}
+							{index > 0 &&
+							<Button type="button" floated="right" circular size='mini' color='red' onClick={() => fields.remove(index)}>
+								<Icon name='minus circle'/>
+								Remove Nationality
+							</Button>
+							}
+						</Grid.Column>
+					</Grid>
+				</Segment>
+			))
+		}
+
+		const renderOccupation = ({fields, meta: {touched, error, submitFailed}}) => {
+			if (fields.length === 0) fields.push({})
+			return fields.map((field, index) => (
+				<Segment key={index} secondary>
+					<Grid>
+						<Grid.Column width={6}>
+							<Field
+								label="Occupation"
+								name={`${field}.occupation`}
+								placeholder="Occupation"
+								component={InputField}
+							/>
+						</Grid.Column>
+						<Grid.Column width={4}>
+							<Field
+								label='Certainty'
+								name={`${field}.certainty`}
+								placeholder='Certainty'
+								options={certaintyOptions}
+								component={DropdownComponent}/>
+						</Grid.Column>
+						<Grid.Column width={4}>
+							{index === 0 &&
+							<Button type="button" floated="right" circular size='mini' color='olive' onClick={() => fields.push({})}>
+								<Icon name='plus circle'/>
+								Add Another Occupation
+							</Button>
+							}
+							{index > 0 &&
+							<Button type="button" floated="right" circular size='mini' color='red' onClick={() => fields.remove(index)}>
+								<Icon name='minus circle'/>
+								Remove Occupation
+							</Button>
+							}
+						</Grid.Column>
+					</Grid>
+				</Segment>
+			))
+		}
 
 		const NamePanels = [
 			{
@@ -104,8 +261,11 @@ class PersonComponent extends Component<Props, State> {
 								label="Standard Name"
 								component={InputField}
 							/>
-							<Divider horizontal>Components</Divider>
-							<NameParts name="standard" nameOptions={nameOptions}/>
+							<Segment secondary>
+								<Header as="h4">Components</Header>
+								<LanguageSelector label="Language" name="standard-name-lang"/>
+								<NameParts name="standard" nameOptions={nameOptions}/>
+							</Segment>
 						</Segment>
 					),
 					key: 'standardNamePanel'
@@ -114,25 +274,24 @@ class PersonComponent extends Component<Props, State> {
 			{
 				title: 'Variant Name(s)',
 				content: {
-					content: (<div>
+					content: (
 						<FieldArray
 							name="variants"
 							component={VariantNames}
 							variantOptions={variantOptions}
-							projectOptions={projectOptions}
 							nameOptions={nameOptions}></FieldArray>
-					</div>),
+					),
 					key: 'variantPanel'
 				}
 			},
 			{
 				title: 'Same As',
 				content: {
-					content: (<FieldRepeater
+					content: (<Segment><FieldRepeater
 						fieldArrayName="sameAs"
-						componentLabel='sameAs'
+						componentLabel="Same As"
 						RepeatableComponent={RepeatableSameAsComponent}
-					/>),
+					/></Segment>),
 					key: 'sameAsPanel'
 				}
 			}
@@ -142,34 +301,69 @@ class PersonComponent extends Component<Props, State> {
 			{
 				title: 'Important Dates',
 				content: {
-					content: (<Segment>
-						<Field name="date" showTime={false} component={renderDatePicker} />
-					</Segment>),
+					content: (<Segment><FieldRepeater
+						fieldArrayName="dates"
+						componentLabel="Date"
+						RepeatableComponent={DateComponent}
+					/></Segment>),
 					key: 'datePanel'
 				}
 			},
 			{
 				title: 'Properties',
 				content: {
-					content: (<Segment>Properties??  ah the various dropdowns</Segment>),
+					content: (
+						<Segment>
+							<Segment secondary>
+								<Grid>
+									<Grid.Column width={4}>
+										<Field
+											label="Factuality"
+											name="factuality"
+											placeholder="Factuality"
+											options={factualityOptions}
+											component={DropdownComponent}
+										/>
+									</Grid.Column>
+									<Grid.Column width={4}>
+										<Field
+											label='Certainty'
+											name='factuality_certainty'
+											placeholder='Certainty'
+											options={certaintyOptions}
+											component={DropdownComponent}/>
+									</Grid.Column>
+								</Grid>
+							</Segment>
+							<Segment secondary>
+								<Field
+									label="Gender"
+									name="gender"
+									placeholder="Gender"
+									multiple
+									scrolling
+									options={genderOptions}
+									component={DropdownComponent}
+								/>
+							</Segment>
+							<FieldArray name="nationality" component={renderNationality}/>
+							<FieldArray name="occupation" component={renderOccupation}/>
+						</Segment>
+					),
 					key: 'propPanel'
 				}
 			},
 			{
 				title: 'General Notes',
 				content: {
-					content: (<FieldRepeater
-						fieldArrayName="generalNotes"
-						componentLabel='note'
-						RepeatableComponent={RepeatableNoteComponent}
-					/>),
+					content: (<Segment><FieldArray name="descriptiveNotes" component={renderDescriptiveNote}/></Segment>),
 					key: 'genNotePanel'
 				}
 			},
 			{
 				title: 'Project Specific Notes',
 				content: {
-					content: (<Segment>VIAF Lookup</Segment>),
+					content: (<Segment><FieldArray name="projectNotes" component={renderProjectNote}/></Segment>),
 					key: 'projNotePanel'
 				}
 			}
@@ -189,7 +383,7 @@ class PersonComponent extends Component<Props, State> {
 					<FormattedMessage id="Person.description"/>
 				</Header>
 
-				<Accordion defaultActiveIndex={[0]} panels={DescriptionPanels} exclusive={false}/>
+				<Accordion defaultActiveIndex={[2]} panels={DescriptionPanels} exclusive={false}/>
 
 				<Header as="h2">
 					<FormattedMessage id="Person.sources"/>
@@ -216,11 +410,17 @@ class PersonComponent extends Component<Props, State> {
 }
 
 // i.e. model -> view
-const mapStateToProps = state => ({})
+const mapStateToProps = state => ({
+	// initialValues: {}
+})
 
-// i.e. controller -> view
+// i.e. controller -> model
 const mapDispatchToProps = dispatch => ({})
 
-export default reduxForm({form: 'PERSON_FORM'})(
+const reduxFormConfig = reduxForm({
+	form: 'PERSON_FORM'
+})
+
+export default reduxFormConfig(
 	connect(mapStateToProps, mapDispatchToProps)(PersonComponent)
 )

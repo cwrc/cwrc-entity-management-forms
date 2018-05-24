@@ -48,7 +48,7 @@ const DropdownComponent = ({
 			{...rest}
 			floated={floated}
 			value={input.value}
-			onChange={(param, data) => input.onChange(data.value)}
+			onChange={(param, data) => { input.onChange(data.value) }}
 		/>
 	</Form.Field>
 )
