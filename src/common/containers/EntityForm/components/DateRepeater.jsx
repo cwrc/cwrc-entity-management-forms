@@ -15,6 +15,8 @@ import momentLocalizer from 'react-widgets-moment'
 
 import {DateTimePicker} from 'react-widgets'
 
+import EntityLookup from './EntityLookup'
+
 import 'react-widgets/dist/css/react-widgets.css'
 
 Moment.locale('en')
@@ -44,12 +46,13 @@ const certaintyOptions = [
 const DateRepeater = ({
 	fieldArrayName,
 	componentLabel,
+	changeFunc,
 	...rest
 }: any) => {
 	return (
 		<FieldArray
 			name={fieldArrayName}
-			props={{componentLabel}}
+			props={{componentLabel, changeFunc}}
 			component={renderSegment}
 			{...rest}
 		/>
@@ -71,9 +74,9 @@ const renderDatePicker = ({input: {onChange, value}, showTime = false}: any) => 
 
 const renderSegment = ({
 	fields,
-	RepeatableComponent,
 	headerLabel,
 	componentLabel,
+	changeFunc,
 	meta: {touched, error, submitFailed},
 	...rest
 }: any) => (
@@ -92,65 +95,79 @@ const renderSegment = ({
 			const date1 = null
 			const date2 = null
 			return (
-				<Segment key={index} secondary clearing>
+				<Segment secondary key={index}>
 					<Grid>
 						<Grid.Column width={15}>
-							<Grid>
-								<Grid.Row>
-									<Grid.Column width={6}>
-										<Field
-											name={`${name}.date1`}
-											value={date1}
-											onChange={handleDateChange}
-											component={renderDatePicker} />
-										<Field
-											required
-											label='Qualifier'
-											name={`${name}.qualifier1`}
-											options={dateQualifierOptions}
-											placeholder='Qualifier'
-											component={DropdownComponent}/>
-										{isRange &&
-											<div>
-												<Field
-													name={`${name}.date2`}
-													value={date2}
-													onChange={handleDateChange}
-													component={renderDatePicker} />
-												<Field
-													required
-													label='Qualifier'
-													name={`${name}.qualifier2`}
-													options={dateQualifierOptions}
-													placeholder='Qualifier'
-													component={DropdownComponent}/>
-											</div>
-										}
-									</Grid.Column>
-									<Grid.Column width={4}>
-										<Field
-											required
-											label='Type'
-											name={`${name}.type`}
-											options={dateTypeOptions}
-											placeholder='Date type'
-											component={DropdownComponent}/>
-										<Field
-											label='Certainty'
-											name={`${name}.cert`}
-											options={certaintyOptions}
-											placeholder='Certainty'
-											component={DropdownComponent}/>
-									</Grid.Column>
-									<Grid.Column width={6}>
-										<Field
-											name={`${name}.note`}
-											component="textarea"
-											rows={3}
-											placeholder="Note"/>
-									</Grid.Column>
-								</Grid.Row>
-							</Grid>
+							<Segment>
+								<Grid>
+									<Grid.Row>
+										<Grid.Column width={6}>
+											<Field
+												name={`${name}.date1`}
+												value={date1}
+												onChange={handleDateChange}
+												component={renderDatePicker} />
+											<Field
+												required
+												label='Qualifier'
+												style={{marginTop: '1em'}}
+												name={`${name}.qualifier1`}
+												options={dateQualifierOptions}
+												placeholder='Qualifier'
+												component={DropdownComponent}/>
+											{isRange &&
+												<div>
+													<Field
+														name={`${name}.date2`}
+														value={date2}
+														onChange={handleDateChange}
+														component={renderDatePicker} />
+													<Field
+														required
+														label='Qualifier'
+														style={{marginTop: '1em'}}
+														name={`${name}.qualifier2`}
+														options={dateQualifierOptions}
+														placeholder='Qualifier'
+														component={DropdownComponent}/>
+												</div>
+											}
+										</Grid.Column>
+										<Grid.Column width={4}>
+											<Field
+												required
+												label='Type'
+												name={`${name}.type`}
+												options={dateTypeOptions}
+												placeholder='Date type'
+												component={DropdownComponent}/>
+											<Field
+												label='Certainty'
+												name={`${name}.cert`}
+												options={certaintyOptions}
+												placeholder='Certainty'
+												component={DropdownComponent}/>
+										</Grid.Column>
+										<Grid.Column width={6}>
+											<Field
+												name={`${name}.note`}
+												component="textarea"
+												rows={3}
+												placeholder="Note"/>
+										</Grid.Column>
+									</Grid.Row>
+									<Grid.Row>
+										<Grid.Column width={16}>
+											<EntityLookup
+												buttonLabel='Add Place'
+												name={`${name}.place`}
+												entityType='place'
+												changeFunc={changeFunc}
+											/>
+										</Grid.Column>
+									</Grid.Row>
+								</Grid>
+							</Segment>
 						</Grid.Column>
 						<Grid.Column width={1}>
 							<Popup size='tiny' position='right center' trigger={

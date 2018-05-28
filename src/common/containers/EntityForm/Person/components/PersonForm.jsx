@@ -18,9 +18,10 @@ import SegmentRepeater from '../../components/SegmentRepeater'
 import DateRepeater from '../../components/DateRepeater'
 import NameParts from '../../components/NameParts'
 import VariantNames from '../../components/VariantNames'
-import DateComponent from '../../components/DateComponent'
 import LanguageSelector from '../../components/LanguageSelector'
 import ProjectSelector from '../../components/ProjectSelector'
+import EntityLookup from '../../components/EntityLookup'
+
 import Values from '../../components/Values'
 
 import type {FormProps} from 'redux-form'
@@ -217,7 +218,19 @@ class PersonComponent extends Component<Props, State> {
 			{
 				title: 'Same As',
 				key: 'sameAsPanel',
-				content: (<Segment><Header as='h4'>Same As</Header></Segment>)
+				content: (
+					<SegmentRepeater
+						fieldArrayName="sameAs"
+						headerLabel="Same As"
+						componentLabel="Same As"
+						RepeatableComponent={EntityLookup}
+						buttonLabel='Add Person'
+						includeCertainty={true}
+						certaintyOptions={certaintyOptions}
+						entityType='person'
+						changeFunc={this.props.change}
+					/>
+				)
 			}
 		]
 
@@ -230,6 +243,7 @@ class PersonComponent extends Component<Props, State> {
 						fieldArrayName="dates"
 						headerLabel="Important Date(s)"
 						componentLabel="Date"
+						changeFunc={this.props.change}
 					/>
 				)
 			},
@@ -343,6 +357,17 @@ class PersonComponent extends Component<Props, State> {
 					<Header as="h2">
 						<FormattedMessage id="Person.sources"/>
 					</Header>
+					{/* <Segment> */}
+					<SegmentRepeater
+						fieldArrayName="bibl"
+						headerLabel=""
+						componentLabel="Source"
+						RepeatableComponent={EntityLookup}
+						buttonLabel='Add Source'
+						entityType='title'
+						changeFunc={this.props.change}
+					/>
+					{/* </Segment> */}
 
 					<Field key="non_field_errors"
 						name="non_field_errors"
