@@ -14,10 +14,12 @@ const InputField = ({
 	required,
 	width,
 	floated,
+	inline,
+	size,
 	meta: {touched, error},
 	...rest
 }: any) => (
-	<Form.Field error={!!(touched && error)} required={required} width={width} floated={floated}>
+	<Form.Field error={!!(touched && error)} inline={inline} required={required} width={width} floated={floated}>
 		<label htmlFor={rest.id || rest.name || ''}>{label}</label>
 		<InputComponent
 			label={labelText}

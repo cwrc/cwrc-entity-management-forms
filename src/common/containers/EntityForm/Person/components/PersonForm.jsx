@@ -6,9 +6,7 @@ import {
 	Message,
 	Grid,
 	Button,
-	Icon,
 	Segment,
-	Accordion,
 	Rail
 } from 'semantic-ui-react'
 import {connect} from 'react-redux'
@@ -16,7 +14,8 @@ import {reduxForm, Field, FieldArray} from 'redux-form'
 import {FormattedMessage} from 'react-intl'
 
 import {InputField, DropdownComponent} from '../../components/FormControls'
-import FieldRepeater from '../../components/FieldRepeater'
+import SegmentRepeater from '../../components/SegmentRepeater'
+import DateRepeater from '../../components/DateRepeater'
 import NameParts from '../../components/NameParts'
 import VariantNames from '../../components/VariantNames'
 import DateComponent from '../../components/DateComponent'
@@ -27,6 +26,7 @@ import Values from '../../components/Values'
 import type {FormProps} from 'redux-form'
 
 const nameOptions = [
+	{key: '', text: '', value: ''},
 	{key: 'forename', text: 'Forename', value: 'forename'},
 	{key: 'surname', text: 'Surname', value: 'surname'},
 	{key: 'generational', text: 'Generational', value: 'generational'},
@@ -34,6 +34,7 @@ const nameOptions = [
 ]
 
 const variantOptions = [
+	{key: '', text: '', value: ''},
 	{key: 'birth', text: 'birth', value: 'birth'},
 	{key: 'married', text: 'married', value: 'married'},
 	{key: 'indexed', text: 'indexed', value: 'indexed'},
@@ -54,11 +55,13 @@ const variantOptions = [
 ]
 
 const factualityOptions = [
+	{key: '', text: '', value: ''},
 	{key: 'real', text: 'Real', value: 'real'},
 	{key: 'fake', text: 'Fake', value: 'fake'}
 ]
 
 const certaintyOptions = [
+	{key: '', text: '', value: ''},
 	{key: 'high', text: 'High', value: 'high'},
 	{key: 'medium', text: 'Medium', value: 'medium'},
 	{key: 'low', text: 'Low', value: 'low'},
@@ -66,6 +69,7 @@ const certaintyOptions = [
 ]
 
 const genderOptions = [
+	{key: '', text: '', value: ''},
 	{key: 'cisgender', text: 'cisgender', value: 'cisgender'},
 	{key: 'ciswoman', text: 'ciswoman', value: 'ciswoman'},
 	{key: 'cisman', text: 'cisman', value: 'cisman'},
@@ -83,300 +87,235 @@ type Props = FormProps
 
 class PersonComponent extends Component<Props, State> {
 	render () {
-		const renderDescriptiveNote = ({fields, meta: {touched, error, submitFailed}}) => {
-			if (fields.length === 0) fields.push({})
-			return fields.map((field, index) => (
-				<Segment key={index} secondary>
-					<Grid>
-						<Grid.Row>
-							<Grid.Column width={12}>
-								<LanguageSelector label="Language" name={`${field}.lang`}/>
-							</Grid.Column>
-							<Grid.Column width={4}>
-								{index === 0 &&
-								<Button type="button" floated="right" circular size='mini' color='olive' onClick={() => fields.push({})}>
-									<Icon name='plus circle'/>
-									Add Another Description
-								</Button>
-								}
-								{index > 0 &&
-								<Button type="button" floated="right" circular size='mini' color='red' onClick={() => fields.remove(index)}>
-									<Icon name='minus circle'/>
-									Remove Description
-								</Button>
-								}
-							</Grid.Column>
-						</Grid.Row>
-						<Grid.Row>
-							<Grid.Column width={12}>
-								<Field
-									width={10}
-									name={`${field}.value`}
-									component='textarea'
-									rows={3}
-									placeholder="Add your note here."/>
-							</Grid.Column>
-						</Grid.Row>
-					</Grid>
-				</Segment>
-			))
-		}
-
-		const renderProjectNote = ({fields, meta: {touched, error, submitFailed}}) => {
-			if (fields.length === 0) fields.push({})
-			return fields.map((field, index) => (
-				<Segment key={index} secondary>
-					<Grid>
-						<Grid.Row>
-							<Grid.Column width={6}>
-								<ProjectSelector label="Project" name={`${field}.project`}/>
-							</Grid.Column>
-							<Grid.Column width={6}>
-								<LanguageSelector label="Language" name={`${field}.lang`}/>
-							</Grid.Column>
-							<Grid.Column width={4}>
-								{index === 0 &&
-								<Button type="button" floated="right" circular size='mini' color='olive' onClick={() => fields.push({})}>
-									<Icon name='plus circle'/>
-									Add Another Project Note
-								</Button>
-								}
-								{index > 0 &&
-								<Button type="button" floated="right" circular size='mini' color='red' onClick={() => fields.remove(index)}>
-									<Icon name='minus circle'/>
-									Remove Project Note
-								</Button>
-								}
-							</Grid.Column>
-						</Grid.Row>
-						<Grid.Row>
-							<Grid.Column width={12}>
-								<Field
-									width={10}
-									name={`${field}.value`}
-									component='textarea'
-									rows={3}
-									placeholder="Add your note here."/>
-							</Grid.Column>
-						</Grid.Row>
-					</Grid>
-				</Segment>
-			))
-		}
-
-		const RepeatableSameAsComponent = ({field}) => (
-			<Field
-				width={12}
-				name={`${field}.value`}
-				component={InputField}
-				placeholder="e.g., http://viaf.org/3323"/>
+		const DescriptiveNote = ({name}) => (
+			<Segment>
+				<Grid>
+					<Grid.Row>
+						<Grid.Column width={16}>
+							<LanguageSelector label="Language" name={`${name}.lang`}/>
+						</Grid.Column>
+					</Grid.Row>
+					<Grid.Row>
+						<Grid.Column width={16}>
+							<Field
+								width={10}
+								name={`${name}.value`}
+								component='textarea'
+								rows={3}
+								placeholder="Add your note here."/>
+						</Grid.Column>
+					</Grid.Row>
+				</Grid>
+			</Segment>
 		)
 
-		const renderNationality = ({fields, meta: {touched, error, submitFailed}}) => {
-			if (fields.length === 0) fields.push({})
-			return fields.map((field, index) => (
-				<Segment key={index} secondary>
-					<Grid>
+		const ProjectNote = ({name}) => (
+			<Segment>
+				<Grid>
+					<Grid.Row>
 						<Grid.Column width={8}>
+							<ProjectSelector label="Project" name={`${name}.project`}/>
+						</Grid.Column>
+						<Grid.Column width={8}>
+							<LanguageSelector label="Language" name={`${name}.lang`}/>
+						</Grid.Column>
+					</Grid.Row>
+					<Grid.Row>
+						<Grid.Column width={16}>
 							<Field
-								label="Nationality"
-								name={`${field}.value`}
-								placeholder="Nationality"
-								component={InputField}
-							/>
+								width={10}
+								name={`${name}.value`}
+								component='textarea'
+								rows={3}
+								placeholder="Add your note here."/>
 						</Grid.Column>
-						<Grid.Column width={4}>
-							<Field
-								label='Certainty'
-								name={`${field}.certainty`}
-								placeholder='Certainty'
-								options={certaintyOptions}
-								component={DropdownComponent}/>
-						</Grid.Column>
-						<Grid.Column width={4}>
-							{index === 0 &&
-							<Button type="button" floated="right" circular size='mini' color='olive' onClick={() => fields.push({})}>
-								<Icon name='plus circle'/>
-								Add Another Nationality
-							</Button>
-							}
-							{index > 0 &&
-							<Button type="button" floated="right" circular size='mini' color='red' onClick={() => fields.remove(index)}>
-								<Icon name='minus circle'/>
-								Remove Nationality
-							</Button>
-							}
-						</Grid.Column>
-					</Grid>
-				</Segment>
-			))
-		}
+					</Grid.Row>
+				</Grid>
+			</Segment>
+		)
 
-		const renderOccupation = ({fields, meta: {touched, error, submitFailed}}) => {
-			if (fields.length === 0) fields.push({})
-			return fields.map((field, index) => (
-				<Segment key={index} secondary>
-					<Grid>
-						<Grid.Column width={8}>
-							<Field
-								label="Occupation"
-								name={`${field}.value`}
-								placeholder="Occupation"
-								component={InputField}
-							/>
-						</Grid.Column>
-						<Grid.Column width={4}>
-							<Field
-								label='Certainty'
-								name={`${field}.certainty`}
-								placeholder='Certainty'
-								options={certaintyOptions}
-								component={DropdownComponent}/>
-						</Grid.Column>
-						<Grid.Column width={4}>
-							{index === 0 &&
-							<Button type="button" floated="right" circular size='mini' color='olive' onClick={() => fields.push({})}>
-								<Icon name='plus circle'/>
-								Add Another Occupation
-							</Button>
-							}
-							{index > 0 &&
-							<Button type="button" floated="right" circular size='mini' color='red' onClick={() => fields.remove(index)}>
-								<Icon name='minus circle'/>
-								Remove Occupation
-							</Button>
-							}
-						</Grid.Column>
-					</Grid>
-				</Segment>
-			))
-		}
+		const NationalityComponent = ({name}) => (
+			<Segment>
+				<Grid>
+					<Grid.Column width={10}>
+						<Field
+							label="Nationality"
+							name={`${name}.value`}
+							placeholder="Nationality"
+							component={InputField}
+						/>
+					</Grid.Column>
+					<Grid.Column width={6}>
+						<Field
+							label='Certainty'
+							name={`${name}.certainty`}
+							placeholder='Certainty'
+							options={certaintyOptions}
+							component={DropdownComponent}/>
+					</Grid.Column>
+				</Grid>
+			</Segment>
+		)
+
+		const OccupationComponent = ({name}) => (
+			<Segment>
+				<Grid>
+					<Grid.Column width={10}>
+						<Field
+							label="Occupation"
+							name={`${name}.value`}
+							placeholder="Occupation"
+							component={InputField}
+						/>
+					</Grid.Column>
+					<Grid.Column width={6}>
+						<Field
+							label='Certainty'
+							name={`${name}.certainty`}
+							placeholder='Certainty'
+							options={certaintyOptions}
+							component={DropdownComponent}/>
+					</Grid.Column>
+				</Grid>
+			</Segment>
+		)
 
 		const NamePanels = [
 			{
 				title: 'Standard Name',
-				content: {
-					content: (
-						<Segment>
-							<Field key="standard-name" required
-								placeholder="e.g. Last Name, First Name (for indexing purposes)"
-								name="standard.name"
-								label="Standard Name"
-								component={InputField}
-							/>
-							<Segment secondary>
-								<Header as="h4">Components</Header>
-								<LanguageSelector label="Language" name="standard.lang"/>
-								<FieldArray name="standard.parts" component={NameParts} nameOptions={nameOptions}/>
-							</Segment>
+				key: 'standardNamePanel',
+				content: (
+					<Segment>
+						<Field required
+							placeholder="e.g. Last Name, First Name (for indexing purposes)"
+							name="standard.name"
+							label="Standard Name"
+							component={InputField}
+						/>
+						<Segment basic>
+							<Header as="h4">Components</Header>
+							<LanguageSelector label="Language" name="standard.lang"/>
+							<FieldArray name="standard.parts" component={NameParts} nameOptions={nameOptions}/>
 						</Segment>
-					),
-					key: 'standardNamePanel'
-				}
+					</Segment>
+				)
 			},
 			{
 				title: 'Variant Name(s)',
-				content: {
-					content: (
-						<FieldArray
-							name="variants"
-							component={VariantNames}
-							variantOptions={variantOptions}
-							nameOptions={nameOptions}
-						/>
-					),
-					key: 'variantPanel'
-				}
+				key: 'variantPanel',
+				content: (
+					<SegmentRepeater
+						fieldArrayName="variants"
+						headerLabel="Variant Name(s)"
+						componentLabel="Variant Name"
+						RepeatableComponent={VariantNames}
+						nameOptions={nameOptions}
+						variantOptions={variantOptions}
+					/>
+				)
 			},
 			{
 				title: 'Same As',
-				content: {
-					content: (<Segment><FieldRepeater
-						fieldArrayName="sameAs"
-						componentLabel="Same As"
-						RepeatableComponent={RepeatableSameAsComponent}
-					/></Segment>),
-					key: 'sameAsPanel'
-				}
+				key: 'sameAsPanel',
+				content: (<Segment><Header as='h4'>Same As</Header></Segment>)
 			}
 		]
 
 		const DescriptionPanels = [
 			{
-				title: 'Important Dates',
-				content: {
-					content: (<Segment><FieldRepeater
+				title: 'Important Date(s)',
+				key: 'datePanel',
+				content: (
+					<DateRepeater
 						fieldArrayName="dates"
+						headerLabel="Important Date(s)"
 						componentLabel="Date"
-						RepeatableComponent={DateComponent}
-					/></Segment>),
-					key: 'datePanel'
-				}
+					/>
+				)
 			},
 			{
 				title: 'Properties',
-				content: {
-					content: (
+				key: 'propPanel',
+				content: (
+					<Segment.Group>
+						<Segment><Header as='h4'>Properties</Header></Segment>
 						<Segment>
-							<Segment secondary>
-								<Grid>
-									<Grid.Column width={4}>
-										<Field
-											label="Factuality"
-											name="properties.factuality"
-											placeholder="Factuality"
-											options={factualityOptions}
-											component={DropdownComponent}
-										/>
-									</Grid.Column>
-									<Grid.Column width={4}>
-										<Field
-											label='Certainty'
-											name='properties.factuality_certainty'
-											placeholder='Certainty'
-											options={certaintyOptions}
-											component={DropdownComponent}/>
-									</Grid.Column>
-								</Grid>
-							</Segment>
-							<Segment secondary>
-								<Field
-									label="Gender"
-									name="properties.gender"
-									placeholder="Gender"
-									multiple
-									scrolling
-									options={genderOptions}
-									component={DropdownComponent}
-								/>
-							</Segment>
-							<FieldArray name="properties.nationality" component={renderNationality}/>
-							<FieldArray name="properties.occupation" component={renderOccupation}/>
+							<Grid>
+								<Grid.Column width={4}>
+									<Field
+										label="Factuality"
+										name="properties.factuality"
+										placeholder="Factuality"
+										options={factualityOptions}
+										component={DropdownComponent}
+									/>
+								</Grid.Column>
+								<Grid.Column width={4}>
+									<Field
+										label='Certainty'
+										name='properties.factuality_certainty'
+										placeholder='Certainty'
+										options={certaintyOptions}
+										component={DropdownComponent}/>
+								</Grid.Column>
+							</Grid>
 						</Segment>
-					),
-					key: 'propPanel'
-				}
+						<Segment>
+							<Field
+								label="Gender"
+								name="properties.gender"
+								placeholder="Gender"
+								multiple
+								scrolling
+								options={genderOptions}
+								component={DropdownComponent}
+							/>
+						</Segment>
+						<SegmentRepeater
+							fieldArrayName="properties.nationality"
+							headerLabel="Nationality"
+							componentLabel="Nationality"
+							RepeatableComponent={NationalityComponent}
+						/>
+						<SegmentRepeater
+							fieldArrayName="properties.occupation"
+							headerLabel="Occupation"
+							componentLabel="Occupation"
+							RepeatableComponent={OccupationComponent}
+						/>
+					</Segment.Group>
+				)
 			},
 			{
-				title: 'General Notes',
-				content: {
-					content: (<Segment><FieldArray name="descriptiveNotes" component={renderDescriptiveNote}/></Segment>),
-					key: 'genNotePanel'
-				}
+				title: 'General Description(s)',
+				key: 'genNotePanel',
+				content: (
+					<SegmentRepeater
+						fieldArrayName="descriptiveNote"
+						headerLabel="General Description(s)"
+						componentLabel="Description"
+						RepeatableComponent={DescriptiveNote}
+					/>
+				)
 			},
 			{
-				title: 'Project Specific Notes',
-				content: {
-					content: (<Segment><FieldArray name="projectNotes" component={renderProjectNote}/></Segment>),
-					key: 'projNotePanel'
-				}
+				title: 'Project-Specific Note(s)',
+				key: 'projNotePanel',
+				content: (
+					<SegmentRepeater
+						fieldArrayName="projectNote"
+						headerLabel="Project-Specific Note(s)"
+						componentLabel="Note"
+						RepeatableComponent={ProjectNote}
+					/>
+				)
 			}
 		]
 
 		const {handleSubmit, invalid, submitting} = this.props
 
 		return (
-			<Segment>
+			<Segment basic>
 				<Rail attached position='left'>
 					<Values form='PERSON_FORM'/>
 				</Rail>
@@ -385,13 +324,21 @@ class PersonComponent extends Component<Props, State> {
 						<FormattedMessage id="Person.identity"/>
 					</Header>
 
-					<Accordion defaultActiveIndex={[0]} panels={NamePanels} exclusive={false}/>
+					<Segment.Group>
+						{NamePanels.map((panel, index) => (
+							<Segment basic key={panel.key}>{panel.content}</Segment>
+						))}
+					</Segment.Group>
 
 					<Header as="h2">
 						<FormattedMessage id="Person.description"/>
 					</Header>
 
-					<Accordion defaultActiveIndex={[2]} panels={DescriptionPanels} exclusive={false}/>
+					<Segment.Group>
+						{DescriptionPanels.map((panel, index) => (
+							<Segment basic key={panel.key}>{panel.content}</Segment>
+						))}
+					</Segment.Group>
 
 					<Header as="h2">
 						<FormattedMessage id="Person.sources"/>
@@ -418,6 +365,20 @@ class PersonComponent extends Component<Props, State> {
 	}
 }
 
+const onSubmit = (values, dispatch) => {
+	console.log(values)
+	// dispatch()
+}
+
+const validate = values => {
+	const errors = {}
+	if (values.standard && !values.standard.name) {
+		errors.standard = {}
+		errors.standard.name = 'Required'
+	}
+	return errors
+}
+
 // i.e. model -> view
 const mapStateToProps = state => ({
 	// initialValues: {}
@@ -427,7 +388,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({})
 
 const reduxFormConfig = reduxForm({
-	form: 'PERSON_FORM'
+	form: 'PERSON_FORM',
+	validate,
+	onSubmit
 })
 
 export default reduxFormConfig(

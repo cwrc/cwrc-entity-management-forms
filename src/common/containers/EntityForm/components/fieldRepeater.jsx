@@ -4,7 +4,7 @@ import {
 	Form,
 	Button,
 	Segment,
-	Icon
+	Popup
 } from 'semantic-ui-react'
 import {FieldArray} from 'redux-form'
 
@@ -38,15 +38,14 @@ const renderFields = ({
 				<Form.Group inline>
 					<RepeatableComponent field={field}/>
 					{index === 0 &&
-					<Button floated='right' circular color="olive" type="button" size='mini' onClick={() => fields.push({})}>
-						<Icon name='plus circle'/>Add {fields.length === 0 ? 'A' : 'Another '} {componentLabel}
-					</Button>
+					<Popup size='tiny' position='right center' trigger={
+						<Button floated='right' color="olive" type="button" size='mini' icon='plus' onClick={() => fields.push({})}/>
+					} content={`Add ${componentLabel}`}/>
 					}
 					{index > 0 &&
-					<Button type="button" width="4" floated="right" circular size='mini' color='red' onClick={() => fields.remove(index)}>
-						<Icon name='minus circle'/>
-						Remove {componentLabel}
-					</Button>
+					<Popup size='tiny' position='right center' trigger={
+						<Button type="button" width="4" floated="right" size='mini' color='red' icon='minus' onClick={() => fields.remove(index)}/>
+					} content={`Remove ${componentLabel}`}/>
 					}
 				</Form.Group>
 			</Segment>
