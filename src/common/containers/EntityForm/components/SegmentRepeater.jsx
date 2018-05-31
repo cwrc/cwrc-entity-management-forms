@@ -33,7 +33,7 @@ const renderSegment = ({
 	meta: {touched, error, submitFailed},
 	...rest
 }: any) => (
-	<Segment>
+	<Segment secondary>
 		<Segment clearing basic style={{padding: 0}}>
 			<Header as="h4" floated='left'>{headerLabel}</Header>
 			<Popup size='tiny' position='right center' trigger={
@@ -41,7 +41,7 @@ const renderSegment = ({
 			} content={`Add ${componentLabel}`} />
 		</Segment>
 		{fields.map((name, index) => (
-			<Segment key={index} secondary clearing>
+			<Segment key={index} clearing>
 				<Grid>
 					<Grid.Column width={15}>
 						<RepeatableComponent name={name} {...rest}/>

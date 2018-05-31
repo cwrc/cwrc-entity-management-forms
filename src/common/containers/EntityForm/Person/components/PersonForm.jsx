@@ -22,9 +22,13 @@ import LanguageSelector from '../../components/LanguageSelector'
 import ProjectSelector from '../../components/ProjectSelector'
 import EntityLookup from '../../components/EntityLookup'
 
+import {required} from '../../components/FieldValidation'
+
 import Values from '../../components/Values'
 
 import type {FormProps} from 'redux-form'
+
+// import sampleValues from '../../../../../../static/sample_person'
 
 const nameOptions = [
 	{key: '', text: '', value: ''},
@@ -35,7 +39,6 @@ const nameOptions = [
 ]
 
 const variantOptions = [
-	{key: '', text: '', value: ''},
 	{key: 'birth', text: 'birth', value: 'birth'},
 	{key: 'married', text: 'married', value: 'married'},
 	{key: 'indexed', text: 'indexed', value: 'indexed'},
@@ -89,7 +92,7 @@ type Props = FormProps
 class PersonComponent extends Component<Props, State> {
 	render () {
 		const DescriptiveNote = ({name}) => (
-			<Segment>
+			<div>
 				<Grid>
 					<Grid.Row>
 						<Grid.Column width={16}>
@@ -107,11 +110,11 @@ class PersonComponent extends Component<Props, State> {
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>
-			</Segment>
+			</div>
 		)
 
 		const ProjectNote = ({name}) => (
-			<Segment>
+			<div>
 				<Grid>
 					<Grid.Row>
 						<Grid.Column width={8}>
@@ -132,53 +135,55 @@ class PersonComponent extends Component<Props, State> {
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>
-			</Segment>
+			</div>
 		)
 
 		const NationalityComponent = ({name}) => (
-			<Segment>
-				<Grid>
-					<Grid.Column width={10}>
+			<div>
+				<Grid verticalAlign='middle' columns='equal'>
+					<Grid.Column>
 						<Field
+							inline
 							label="Nationality"
 							name={`${name}.value`}
 							placeholder="Nationality"
 							component={InputField}
 						/>
 					</Grid.Column>
-					<Grid.Column width={6}>
+					<Grid.Column>
 						<Field
 							label='Certainty'
-							name={`${name}.certainty`}
+							name={`${name}.cert`}
 							placeholder='Certainty'
 							options={certaintyOptions}
 							component={DropdownComponent}/>
 					</Grid.Column>
 				</Grid>
-			</Segment>
+			</div>
 		)
 
 		const OccupationComponent = ({name}) => (
-			<Segment>
-				<Grid>
-					<Grid.Column width={10}>
+			<div>
+				<Grid verticalAlign='middle' columns='equal'>
+					<Grid.Column>
 						<Field
+							inline
 							label="Occupation"
 							name={`${name}.value`}
 							placeholder="Occupation"
 							component={InputField}
 						/>
 					</Grid.Column>
-					<Grid.Column width={6}>
+					<Grid.Column>
 						<Field
 							label='Certainty'
-							name={`${name}.certainty`}
+							name={`${name}.cert`}
 							placeholder='Certainty'
 							options={certaintyOptions}
 							component={DropdownComponent}/>
 					</Grid.Column>
 				</Grid>
-			</Segment>
+			</div>
 		)
 
 		const NamePanels = [
@@ -187,16 +192,18 @@ class PersonComponent extends Component<Props, State> {
 				key: 'standardNamePanel',
 				content: (
 					<Segment>
-						<Field required
+						<Field
+							required
+							validate={[required]}
 							placeholder="e.g. Last Name, First Name (for indexing purposes)"
-							name="standard.name"
+							name="identity.standardName"
 							label="Standard Name"
 							component={InputField}
 						/>
 						<Segment basic>
 							<Header as="h4">Components</Header>
-							<LanguageSelector label="Language" name="standard.lang"/>
-							<FieldArray name="standard.parts" component={NameParts} nameOptions={nameOptions}/>
+							<LanguageSelector label="Language" name="identity.namePartsLang"/>
+							<FieldArray name="identity.nameParts" component={NameParts} nameOptions={nameOptions}/>
 						</Segment>
 					</Segment>
 				)
@@ -206,7 +213,7 @@ class PersonComponent extends Component<Props, State> {
 				key: 'variantPanel',
 				content: (
 					<SegmentRepeater
-						fieldArrayName="variants"
+						fieldArrayName="identity.variants"
 						headerLabel="Variant Name(s)"
 						componentLabel="Variant Name"
 						RepeatableComponent={VariantNames}
@@ -220,7 +227,7 @@ class PersonComponent extends Component<Props, State> {
 				key: 'sameAsPanel',
 				content: (
 					<SegmentRepeater
-						fieldArrayName="sameAs"
+						fieldArrayName="identity.sameAs"
 						headerLabel="Same As"
 						componentLabel="Same As"
 						RepeatableComponent={EntityLookup}
@@ -240,7 +247,7 @@ class PersonComponent extends Component<Props, State> {
 				key: 'datePanel',
 				content: (
 					<DateRepeater
-						fieldArrayName="dates"
+						fieldArrayName="description.dates"
 						headerLabel="Important Date(s)"
 						componentLabel="Date"
 						changeFunc={this.props.change}
@@ -254,20 +261,20 @@ class PersonComponent extends Component<Props, State> {
 					<Segment.Group>
 						<Segment><Header as='h4'>Properties</Header></Segment>
 						<Segment>
-							<Grid>
-								<Grid.Column width={4}>
+							<Grid columns='equal'>
+								<Grid.Column>
 									<Field
 										label="Factuality"
-										name="properties.factuality"
+										name="description.properties.factuality.value"
 										placeholder="Factuality"
 										options={factualityOptions}
 										component={DropdownComponent}
 									/>
 								</Grid.Column>
-								<Grid.Column width={4}>
+								<Grid.Column>
 									<Field
 										label='Certainty'
-										name='properties.factuality_certainty'
+										name='description.properties.factuality.cert'
 										placeholder='Certainty'
 										options={certaintyOptions}
 										component={DropdownComponent}/>
@@ -277,7 +284,7 @@ class PersonComponent extends Component<Props, State> {
 						<Segment>
 							<Field
 								label="Gender"
-								name="properties.gender"
+								name="description.properties.gender"
 								placeholder="Gender"
 								multiple
 								scrolling
@@ -286,13 +293,13 @@ class PersonComponent extends Component<Props, State> {
 							/>
 						</Segment>
 						<SegmentRepeater
-							fieldArrayName="properties.nationality"
+							fieldArrayName="description.properties.nationality"
 							headerLabel="Nationality"
 							componentLabel="Nationality"
 							RepeatableComponent={NationalityComponent}
 						/>
 						<SegmentRepeater
-							fieldArrayName="properties.occupation"
+							fieldArrayName="description.properties.occupation"
 							headerLabel="Occupation"
 							componentLabel="Occupation"
 							RepeatableComponent={OccupationComponent}
@@ -305,7 +312,7 @@ class PersonComponent extends Component<Props, State> {
 				key: 'genNotePanel',
 				content: (
 					<SegmentRepeater
-						fieldArrayName="descriptiveNote"
+						fieldArrayName="description.descriptiveNote"
 						headerLabel="General Description(s)"
 						componentLabel="Description"
 						RepeatableComponent={DescriptiveNote}
@@ -317,7 +324,7 @@ class PersonComponent extends Component<Props, State> {
 				key: 'projNotePanel',
 				content: (
 					<SegmentRepeater
-						fieldArrayName="projectNote"
+						fieldArrayName="description.projectNote"
 						headerLabel="Project-Specific Note(s)"
 						componentLabel="Note"
 						RepeatableComponent={ProjectNote}
@@ -359,7 +366,7 @@ class PersonComponent extends Component<Props, State> {
 					</Header>
 					{/* <Segment> */}
 					<SegmentRepeater
-						fieldArrayName="bibl"
+						fieldArrayName="sources.bibl"
 						headerLabel=""
 						componentLabel="Source"
 						RepeatableComponent={EntityLookup}
@@ -390,17 +397,196 @@ class PersonComponent extends Component<Props, State> {
 	}
 }
 
+const createXMLFromPath = (parent: Element, path: String, childText?: String) => {
+	let tags = path.split('/')
+	let currParent = parent
+	for (let tag of tags) {
+		let hasAtt = tag.indexOf('[') !== -1
+		let tagName
+		if (hasAtt) {
+			tagName = tag.slice(0, tag.indexOf('['))
+		} else {
+			tagName = tag
+		}
+		let el = parent.ownerDocument.createElement(tagName)
+		if (hasAtt) {
+			let attName = tag.slice(tag.indexOf('@') + 1, tag.indexOf('='))
+			let attValue = tag.slice(tag.indexOf('"') + 1, tag.lastIndexOf('"'))
+			attValue = decodeURIComponent(attValue)
+			el.setAttribute(attName, attValue)
+		}
+		currParent.appendChild(el)
+
+		currParent = el
+	}
+	if (childText !== undefined) {
+		currParent.appendChild(currParent.ownerDocument.createTextNode(childText))
+	}
+
+	return currParent
+}
+
+const json2xml = (values) => {
+	let xml = `<?xml version="1.0" encoding="UTF-8"?>
+	<TEI xmlns="http://www.tei-c.org/ns/1.0"><text><body><listPerson><person></person></listPerson></body></text></TEI>`
+	let xmlDoc
+	if (window.DOMParser) {
+		const parser = new DOMParser()
+		xmlDoc = parser.parseFromString(xml, 'text/xml')
+	} else {
+		return null
+	}
+
+	let person = xmlDoc.querySelector('person')
+	// identity
+	// lang
+	if (values.identity.namePartsLang) {
+		let persNameLangEl = createXMLFromPath(person, 'persName')
+		persNameLangEl.setAttributeNS('http://www.w3.org/XML/1998/namespace', 'xml:lang', values.identity.namePartsLang)
+	}
+	// standard name
+	createXMLFromPath(person, 'persName[@type="standard"]/name', values.identity.standardName)
+	// name components
+	if (values.identity.nameParts) {
+		for (let namePart of values.identity.nameParts) {
+			let namePartEl = createXMLFromPath(person, 'persName[@type="prefered"]/name', namePart.value)
+			if (namePart.type) {
+				let namePartType = namePart.type.replace(/\s+/g, '_')
+				namePartEl.setAttribute('type', namePartType)
+			}
+		}
+	}
+	// name variants
+	if (values.identity.variants) {
+		for (let variant of values.identity.variants) {
+			let variantEl = createXMLFromPath(person, 'persName[@type="variant"]')
+			if (variant.lang) {
+				variantEl.setAttributeNS('http://www.w3.org/XML/1998/namespace', 'xml:lang', variant.lang)
+			}
+			if (variant.type) {
+				let variantType = variant.type.replace(/\s+/g, '_')
+				variantEl.setAttribute('role', variantType)
+			}
+			if (variant.project) {
+				createXMLFromPath(variantEl, 'note/desc/orgName', variant.project)
+			}
+			if (variant.parts) {
+				for (let part of variant.parts) {
+					createXMLFromPath(variantEl, `name[@type="${part.type}"]`, part.value)
+				}
+			}
+		}
+	}
+	// same as
+	if (values.identity.sameAs) {
+		for (let sameAs of values.identity.sameAs) {
+			let sameAsEl = createXMLFromPath(person, `idno[@type="${sameAs.type}"]`, sameAs.idno)
+			if (sameAs.cert) {
+				sameAsEl.setAttribute('cert', sameAs.cert)
+			}
+		}
+	}
+	// description
+	// dates
+	if (values.description.dates) {
+		for (let date of values.description.dates) {
+			let dateTypeEl = createXMLFromPath(person, date.type)
+			let dateEl = createXMLFromPath(dateTypeEl, 'date')
+			if (date.cert) {
+				dateEl.setAttribute('cert', date.cert)
+			}
+			if (date.date1 && date.qualifier1) {
+				dateEl.setAttribute(date.qualifier1, date.date1)
+			}
+			if (date.date2 && date.qualifier2) {
+				dateEl.setAttribute(date.qualifier2, date.date2)
+			}
+			if (date.note) {
+				createXMLFromPath(dateEl, 'note', date.note)
+			}
+			if (date.place) {
+				createXMLFromPath(dateTypeEl, `placeName[@ref="${encodeURIComponent(date.place.idno)}"]`, date.place.name)
+			}
+		}
+	}
+	// properties
+	let props = values.description.properties
+	if (props) {
+		// factuality
+		if (props.factuality) {
+			let traitEl = createXMLFromPath(person, 'trait[@type="factuality"]')
+			if (props.factuality.cert) {
+				traitEl.setAttribute('cert', props.factuality.cert)
+			}
+			createXMLFromPath(traitEl, 'ab', props.factuality.value)
+		}
+		// gender
+		if (props.gender) {
+			let sex = props.gender.join(' ')
+			person.setAttribute('sex', sex)
+		}
+		// occupation
+		if (props.occupation) {
+			for (let occ of props.occupation) {
+				let occEl = createXMLFromPath(person, 'occupation', occ.value)
+				if (occ.cert) {
+					occEl.setAttribute('cert', occ.cert)
+				}
+			}
+		}
+		// nationality
+		if (props.nationality) {
+			for (let nat of props.nationality) {
+				let natEl = createXMLFromPath(person, 'nationality', nat.value)
+				if (nat.cert) {
+					natEl.setAttribute('cert', nat.cert)
+				}
+			}
+		}
+	}
+	// description
+	if (values.description.descriptiveNote) {
+		for (let note of values.description.descriptiveNote) {
+			let noteEl = createXMLFromPath(person, 'note[@type="general"]', note.value)
+			if (note.lang) {
+				noteEl.setAttributeNS('http://www.w3.org/XML/1998/namespace', 'xml:lang', note.lang)
+			}
+		}
+	}
+	// project note
+	if (values.description.projectNote) {
+		for (let note of values.description.projectNote) {
+			let noteEl = createXMLFromPath(person, 'note[@type="project-specific"]', note.value)
+			if (note.lang) {
+				noteEl.setAttributeNS('http://www.w3.org/XML/1998/namespace', 'xml:lang', note.lang)
+			}
+			if (note.project) {
+				createXMLFromPath(noteEl, 'respons[@locus="value"]/desc/orgName', note.project)
+			}
+		}
+	}
+	// sources
+	if (values.sources.bibl) {
+		let listBibl = createXMLFromPath(person, 'listBibl')
+		for (let bibl of values.sources.bibl) {
+			let biblEl = createXMLFromPath(listBibl, 'bibl')
+			createXMLFromPath(biblEl, 'title', bibl.name)
+			createXMLFromPath(biblEl, `idno[@type="${bibl.type}"]`, bibl.idno)
+		}
+	}
+	return xmlDoc
+}
+
 const onSubmit = (values, dispatch) => {
-	console.log(values)
+	// let xml = json2xml(sampleValues)
+	// let s = new XMLSerializer()
+	// let xmlStr = s.serializeToString(xml)
+	// console.log(xml)
 	// dispatch()
 }
 
 const validate = values => {
 	const errors = {}
-	if (values.standard && !values.standard.name) {
-		errors.standard = {}
-		errors.standard.name = 'Required'
-	}
 	return errors
 }
 

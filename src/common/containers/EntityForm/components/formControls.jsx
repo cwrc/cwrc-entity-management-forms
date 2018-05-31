@@ -43,16 +43,70 @@ const DropdownComponent = ({
 	floated,
 	...rest
 }: any) => (
-	<Form.Field required={required} inline floated={floated} width={width}>
+	<Form.Field error={!!(touched && error)} required={required} inline floated={floated} width={width}>
 		<label htmlFor={rest.id || rest.name || ''}>{label}</label>
 		<Dropdown
 			{...input}
 			{...rest}
+			selection
 			floated={floated}
 			value={input.value}
 			onChange={(param, data) => { input.onChange(data.value) }}
 		/>
+		{touched && error ? (
+			<Label basic color="red" pointing>
+				{error}
+			</Label>
+		) : null}
 	</Form.Field>
 )
 
-export {InputField, DropdownComponent}
+/**
+ * Allows for the addition of custom values
+ */
+class DropdownAddableComponent extends React.Component<Props, State> {
+	state = {options: this.props.options}
+
+	handleAddition = (e, {value}) => {
+		this.setState({
+			options: [{text: value, value}, ...this.state.options]
+		})
+	}
+
+	render () {
+		const {
+			input,
+			label,
+			meta: {touched, error},
+			required,
+			width,
+			floated,
+			...rest
+		} = this.props
+		const options = this.state.options
+		return (
+			<Form.Field error={!!(touched && error)} required={required} inline floated={floated} width={width}>
+				<label htmlFor={rest.id || rest.name || ''}>{label}</label>
+				<Dropdown
+					{...input}
+					{...rest}
+					selection
+					search
+					allowAdditions
+					options={options}
+					floated={floated}
+					value={input.value}
+					onChange={(param, data) => { input.onChange(data.value) }}
+					onAddItem={this.handleAddition}
+				/>
+				{touched && error ? (
+					<Label basic color="red" pointing>
+						{error}
+					</Label>
+				) : null}
+			</Form.Field>
+		)
+	}
+}
+
+export {InputField, DropdownComponent, DropdownAddableComponent}

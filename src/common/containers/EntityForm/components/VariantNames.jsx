@@ -1,34 +1,36 @@
 // @flow
 import React from 'react'
 import {Field, FieldArray} from 'redux-form'
-import {Segment, Grid, Divider} from 'semantic-ui-react'
-import {DropdownComponent} from '../components/FormControls'
+import {Grid, Divider} from 'semantic-ui-react'
+import {DropdownAddableComponent} from '../components/FormControls'
 import NameParts from '../components/NameParts'
 import LanguageSelector from '../components/LanguageSelector'
 import ProjectSelector from '../components/ProjectSelector'
+import {required} from '../components/FieldValidation'
 
 const VariantNames = ({
 	name,
 	variantOptions,
 	nameOptions
 }: any) => (
-	<Segment>
-		<Grid columns={4}>
-			<Grid.Column>
+	<div>
+		<Grid stackable>
+			<Grid.Column width={6}>
 				<Field
-					name={`${name}.variantType`}
+					name={`${name}.type`}
 					required
+					validate={[required]}
 					label='Variant Type'
 					options={variantOptions}
 					placeholder='Select Type'
-					component={DropdownComponent}/>
+					component={DropdownAddableComponent}/>
 			</Grid.Column>
-			<Grid.Column>
+			<Grid.Column width={5}>
 				<ProjectSelector
 					name={`${name}.project`}
 					label='Project'/>
 			</Grid.Column>
-			<Grid.Column>
+			<Grid.Column width={5}>
 				<LanguageSelector
 					name={`${name}.lang`}
 					label="Language"/>
@@ -36,7 +38,7 @@ const VariantNames = ({
 		</Grid>
 		<Divider/>
 		<FieldArray name={`${name}.parts`} nameOptions={nameOptions} component={NameParts}/>
-	</Segment>
+	</div>
 )
 
 export default VariantNames

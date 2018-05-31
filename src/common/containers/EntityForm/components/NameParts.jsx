@@ -1,13 +1,12 @@
 // @flow
 import React from 'react'
 import {
-	Form,
+	Grid,
 	Button,
-	List,
 	Popup
 } from 'semantic-ui-react'
 import {Field} from 'redux-form'
-import {InputField, DropdownComponent} from './FormControls'
+import {InputField, DropdownAddableComponent} from './FormControls'
 
 const NameParts = ({
 	fields,
@@ -17,28 +16,40 @@ const NameParts = ({
 }: any) => {
 	if (fields.length === 0) fields.push({})
 	return (
-		<List verticalAlign='middle'>
+		<Grid columns='equal'>
 			{fields.map((nameComponent, index) => (
-				<List.Item key={index} >
-					<List.Content>
-						<Form.Group inline>
-							<Field name={`${nameComponent}.value`} width={11} component={InputField}/>
-							<Field name={`${nameComponent}.type`} width={4} options={nameOptions} label='Name Type' placeholder='Name Type' component={DropdownComponent}/>
-							{index === 0 &&
-							<Popup size='tiny' position='right center' trigger={
-								<Button type="button" size='mini' color='olive' icon='plus' onClick={() => fields.push({})}/>
-							} content='Add a Name Part'/>
-							}
-							{index > 0 &&
-							<Popup size='tiny' position='right center' trigger={
-								<Button type="button" size='mini' color='red' icon='minus' onClick={() => fields.remove(index)}/>
-							} content='Remove Name Part'/>
-							}
-						</Form.Group>
-					</List.Content>
-				</List.Item>
+				<Grid.Row key={index} verticalAlign='middle'>
+					<Grid.Column>
+						<Field
+							name={`${nameComponent}.value`}
+							placeholder='Name'
+							component={InputField}
+						/>
+					</Grid.Column>
+					<Grid.Column width={6}>
+						<Field
+							name={`${nameComponent}.type`}
+							options={nameOptions}
+							label='Name Type'
+							placeholder='Name Type'
+							component={DropdownAddableComponent}
+						/>
+					</Grid.Column>
+					<Grid.Column width={1}>
+						{index === 0 &&
+						<Popup size='tiny' position='right center' trigger={
+							<Button type="button" size='tiny' color='olive' icon='plus' onClick={() => fields.push({})}/>
+						} content='Add a Name Part'/>
+						}
+						{index > 0 &&
+						<Popup size='tiny' position='right center' trigger={
+							<Button type="button" size='tiny' color='red' icon='minus' onClick={() => fields.remove(index)}/>
+						} content='Remove Name Part'/>
+						}
+					</Grid.Column>
+				</Grid.Row>
 			))}
-		</List>
+		</Grid>
 	)
 }
 

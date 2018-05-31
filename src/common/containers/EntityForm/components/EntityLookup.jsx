@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import {
-	Grid, Button, Segment, Icon, Header
+	Grid, Button, Popup, Icon, Header
 } from 'semantic-ui-react'
 import {Field} from 'redux-form'
 import {DropdownComponent} from '../components/FormControls'
@@ -24,7 +24,7 @@ PublicEntityDialog.registerEntitySources({
 })
 
 class EntityLookup extends React.Component<Props, State> {
-	handleClick = () => {
+	handleSearchClick = () => {
 		const name = this.props.name
 		const entityType = this.props.entityType
 		const changeFunc = this.props.changeFunc
@@ -41,6 +41,14 @@ class EntityLookup extends React.Component<Props, State> {
 				console.log(error)
 			}
 		})
+	}
+
+	handleClearClick = () => {
+		const name = this.props.name
+		const changeFunc = this.props.changeFunc
+		changeFunc(`${name}.name`, '')
+		changeFunc(`${name}.idno`, '')
+		changeFunc(`${name}.type`, '')
 	}
 
 	renderName = (field) => (
@@ -60,28 +68,41 @@ class EntityLookup extends React.Component<Props, State> {
 		const buttonLabel = this.props.buttonLabel
 		const includeCertainty = this.props.includeCertainty
 		const certaintyOptions = this.props.certaintyOptions
+		const includeClear = this.props.includeClear
+		const entityType = this.props.entityType
+		const entityLabel = entityType.charAt(0).toUpperCase() + entityType.slice(1)
 		return (
-			<Segment>
-				<Grid>
+			<div>
+				<Grid columns='equal'>
 					<Grid.Row verticalAlign='top'>
 						<Grid.Column width={4}>
-							<Button fluid type="button" floated='right' size='tiny' color='olive' onClick={() => this.handleClick()}>
+							<Button type="button" size='tiny' color='olive' onClick={() => this.handleSearchClick()}>
 								<Icon name='search' />{buttonLabel}
 							</Button>
-							{includeCertainty &&
-							<Field name={`${name}.cert`}
-								style={{marginTop: '1em'}}
-								label='Certainty' placeholder='Certainty' component={DropdownComponent} options={certaintyOptions}
-							/>
-							}
 						</Grid.Column>
-						<Grid.Column width={12}>
+						<Grid.Column>
 							<Field name={`${name}.name`} component={this.renderName} />
 							<Field name={`${name}.idno`} component={this.renderURI} />
 						</Grid.Column>
+						{includeClear &&
+						<Grid.Column width={1}>
+							<Popup size='tiny' position='right center' trigger={
+								<Button type="button" size='tiny' color='red' icon='remove' onClick={() => this.handleClearClick()} />
+							} content={`Clear ${entityLabel}`} />
+						</Grid.Column>
+						}
 					</Grid.Row>
+					{includeCertainty &&
+					<Grid.Row style={{paddingTop: 0}}>
+						<Grid.Column>
+							<Field name={`${name}.cert`}
+								label='Certainty' placeholder='Certainty' component={DropdownComponent} options={certaintyOptions}
+							/>
+						</Grid.Column>
+					</Grid.Row>
+					}
 				</Grid>
-			</Segment>
+			</div>
 		)
 	}
 }
