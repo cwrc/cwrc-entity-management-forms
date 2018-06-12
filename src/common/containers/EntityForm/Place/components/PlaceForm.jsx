@@ -7,7 +7,8 @@ import {
 	Grid,
 	Button,
 	Segment,
-	Rail
+	Rail,
+	Input
 } from 'semantic-ui-react'
 import {connect} from 'react-redux'
 import {reduxForm, Field, FieldArray} from 'redux-form'
@@ -66,6 +67,14 @@ const factualityOptions = [
 	{key: 'fake', text: 'Fake', value: 'fake'}
 ]
 
+const placeTypeOptions = [
+	{key: '', text: '', value: ''}
+]
+
+const countryOptions = [
+	{key: '', text: '', value: ''}
+]
+
 const certaintyOptions = [
 	{key: '', text: '', value: ''},
 	{key: 'high', text: 'High', value: 'high'},
@@ -74,24 +83,9 @@ const certaintyOptions = [
 	{key: 'unknown', text: 'Unknown', value: 'unknown'}
 ]
 
-const genderOptions = [
-	{key: '', text: '', value: ''},
-	{key: 'cisgender', text: 'cisgender', value: 'cisgender'},
-	{key: 'ciswoman', text: 'ciswoman', value: 'ciswoman'},
-	{key: 'cisman', text: 'cisman', value: 'cisman'},
-	{key: 'woman', text: 'woman', value: 'woman'},
-	{key: 'man', text: 'man', value: 'man'},
-	{key: 'transgender', text: 'transgender', value: 'transgender'},
-	{key: 'transwoman', text: 'transwoman', value: 'transwoman'},
-	{key: 'transman', text: 'transman', value: 'transman'},
-	{key: 'androgynous', text: 'androgynous', value: 'androgynous'},
-	{key: 'genderqueer', text: 'genderqueer', value: 'genderqueer'},
-	{key: 'genderselfreported', text: 'genderselfreported', value: 'genderselfreported'}
-]
-
 type Props = FormProps
 
-class PersonComponent extends Component<Props, State> {
+class PlaceComponent extends Component<Props, State> {
 	render () {
 		const DescriptiveNote = ({name}) => (
 			<div>
@@ -136,54 +130,6 @@ class PersonComponent extends Component<Props, State> {
 								placeholder="Add your note here."/>
 						</Grid.Column>
 					</Grid.Row>
-				</Grid>
-			</div>
-		)
-
-		const NationalityComponent = ({name}) => (
-			<div>
-				<Grid verticalAlign='middle' columns='equal'>
-					<Grid.Column>
-						<Field
-							inline
-							label="Nationality"
-							name={`${name}.value`}
-							placeholder="Nationality"
-							component={InputField}
-						/>
-					</Grid.Column>
-					<Grid.Column>
-						<Field
-							label='Certainty'
-							name={`${name}.cert`}
-							placeholder='Certainty'
-							options={certaintyOptions}
-							component={DropdownComponent}/>
-					</Grid.Column>
-				</Grid>
-			</div>
-		)
-
-		const OccupationComponent = ({name}) => (
-			<div>
-				<Grid verticalAlign='middle' columns='equal'>
-					<Grid.Column>
-						<Field
-							inline
-							label="Occupation"
-							name={`${name}.value`}
-							placeholder="Occupation"
-							component={InputField}
-						/>
-					</Grid.Column>
-					<Grid.Column>
-						<Field
-							label='Certainty'
-							name={`${name}.cert`}
-							placeholder='Certainty'
-							options={certaintyOptions}
-							component={DropdownComponent}/>
-					</Grid.Column>
 				</Grid>
 			</div>
 		)
@@ -233,10 +179,10 @@ class PersonComponent extends Component<Props, State> {
 						headerLabel="Same As"
 						componentLabel="Same As"
 						RepeatableComponent={EntityLookup}
-						buttonLabel='Add Person'
+						buttonLabel='Add Place'
 						includeCertainty={true}
 						certaintyOptions={certaintyOptions}
-						entityType='person'
+						entityType='place'
 						changeFunc={this.props.change}
 					/>
 				)
@@ -284,28 +230,107 @@ class PersonComponent extends Component<Props, State> {
 							</Grid>
 						</Segment>
 						<Segment>
+							<Grid columns='equal'>
+								<Grid.Column>
+									<Field
+										label="Place Type"
+										name="description.properties.placeType.value"
+										placeholder="Place Type"
+										options={placeTypeOptions}
+										component={DropdownComponent}
+									/>
+								</Grid.Column>
+								<Grid.Column>
+									<Field
+										label='Certainty'
+										name='description.properties.placeType.cert'
+										placeholder='Certainty'
+										options={certaintyOptions}
+										component={DropdownComponent}/>
+								</Grid.Column>
+							</Grid>
+						</Segment>
+					</Segment.Group>
+				)
+			},
+			{
+				title: 'Location',
+				key: 'locPanel',
+				content: (
+					<Segment.Group>
+						<Segment><Header as='h4'>Location</Header></Segment>
+						<Segment>
+							<Grid columns='equal'>
+								<Grid.Column>
+									<Field
+										label="Country"
+										name="description.location.country.value"
+										placeholder="Country"
+										options={countryOptions}
+										component={DropdownComponent}
+									/>
+								</Grid.Column>
+								<Grid.Column>
+									<Field
+										label='Certainty'
+										name='description.location.country.cert'
+										placeholder='Certainty'
+										options={certaintyOptions}
+										component={DropdownComponent}/>
+								</Grid.Column>
+							</Grid>
+						</Segment>
+						<Segment>
+							<Grid columns='equal'>
+								<Grid.Column>
+									<Field
+										label="Region"
+										name="description.location.region.value"
+										placeholder="Region"
+										component={InputField}
+									/>
+								</Grid.Column>
+								<Grid.Column>
+									<Field
+										label='Certainty'
+										name='description.location.region.cert'
+										placeholder='Certainty'
+										options={certaintyOptions}
+										component={DropdownComponent}/>
+								</Grid.Column>
+							</Grid>
+						</Segment>
+						<Segment>
 							<Field
-								label="Gender"
-								name="description.properties.gender"
-								placeholder="Gender"
-								multiple
-								scrolling
-								options={genderOptions}
-								component={DropdownComponent}
+								label="Address"
+								name="description.location.address"
+								placeholder="Address"
+								component={InputField}
 							/>
 						</Segment>
-						<SegmentRepeater
-							fieldArrayName="description.properties.nationality"
-							headerLabel="Nationality"
-							componentLabel="Nationality"
-							RepeatableComponent={NationalityComponent}
-						/>
-						<SegmentRepeater
-							fieldArrayName="description.properties.occupation"
-							headerLabel="Occupation"
-							componentLabel="Occupation"
-							RepeatableComponent={OccupationComponent}
-						/>
+						<Segment>
+							<Grid>
+								<Grid.Column width={3}>
+									<Header as='h5'>Coordinates</Header>
+								</Grid.Column>
+								<Grid.Column width={6}>
+									<Field
+										label="Latitude"
+										name="description.location.latitude"
+										placeholder="Latitude"
+										component={InputField}
+									/>
+								</Grid.Column>
+								<Grid.Column width={7}>
+									<Field
+										label='Longitude'
+										name='description.location.longitude'
+										placeholder='Longitude'
+										component={InputField}
+									/>
+								</Grid.Column>
+							</Grid>
+						</Segment>
 					</Segment.Group>
 				)
 			},
@@ -340,7 +365,7 @@ class PersonComponent extends Component<Props, State> {
 		return (
 			<Segment basic>
 				<Rail attached position='left'>
-					<Values form='PERSON_FORM'/>
+					<Values form='PLACE_FORM'/>
 				</Rail>
 				<Form onSubmit={handleSubmit} error={invalid}>
 					<Header as="h2">
@@ -571,11 +596,11 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({})
 
 const reduxFormConfig = reduxForm({
-	form: 'PERSON_FORM',
+	form: 'PLACE_FORM',
 	validate,
 	onSubmit
 })
 
 export default reduxFormConfig(
-	connect(mapStateToProps, mapDispatchToProps)(PersonComponent)
+	connect(mapStateToProps, mapDispatchToProps)(PlaceComponent)
 )

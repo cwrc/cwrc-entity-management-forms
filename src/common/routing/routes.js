@@ -38,11 +38,11 @@ function asyncComponentCreator (url) {
 }
 
 function routingFnCreator (useFor: 'sidebar' | 'routing' | 'meta' | 'all' = 'all') {
-	const [AsyncDashoard, AsyncLogin, AsyncPersonEdit, AsyncLinks, AsyncNotFound] = [
+	const [AsyncDashoard, AsyncLogin, AsyncPersonEdit, AsyncPlaceEdit, AsyncNotFound] = [
 		'Dashboard',
 		'Login',
 		'EntityForm/Person',
-		'Links',
+		'EntityForm/Place',
 		'NotFound'
 	].map(a => asyncComponentCreator(a))
 
@@ -76,16 +76,16 @@ function routingFnCreator (useFor: 'sidebar' | 'routing' | 'meta' | 'all' = 'all
 			tag: Route,
 			component: AsyncPersonEdit,
 			meta: {
-				icon: 'user',
 				name: 'Add a Person',
+				icon: 'user',
 				sidebarVisible: true
 			}
 		},
 		{
-			path: '/links',
+			path: '/place',
 			exact: true,
 			tag: Route,
-			component: AsyncLinks,
+			component: AsyncPlaceEdit,
 			meta: {
 				name: 'Add a Place',
 				icon: 'world',
