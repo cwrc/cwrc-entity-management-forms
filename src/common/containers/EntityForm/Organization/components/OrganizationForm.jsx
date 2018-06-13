@@ -7,7 +7,8 @@ import {
 	Grid,
 	Button,
 	Segment,
-	Rail
+	Rail,
+	Input
 } from 'semantic-ui-react'
 import {connect} from 'react-redux'
 import {reduxForm, Field, FieldArray} from 'redux-form'
@@ -29,8 +30,6 @@ import Values from '../../components/Values'
 import type {FormProps} from 'redux-form'
 
 import {createXMLFromPath} from '../../utilities'
-
-// import sampleValues from '../../../../../../static/sample_person'
 
 const nameOptions = [
 	{key: '', text: '', value: ''},
@@ -66,6 +65,10 @@ const factualityOptions = [
 	{key: 'fake', text: 'Fake', value: 'fake'}
 ]
 
+const orgTypeOptions = [
+	{key: '', text: '', value: ''}
+]
+
 const certaintyOptions = [
 	{key: '', text: '', value: ''},
 	{key: 'high', text: 'High', value: 'high'},
@@ -74,73 +77,10 @@ const certaintyOptions = [
 	{key: 'unknown', text: 'Unknown', value: 'unknown'}
 ]
 
-const genderOptions = [
-	{key: '', text: '', value: ''},
-	{key: 'cisgender', text: 'cisgender', value: 'cisgender'},
-	{key: 'ciswoman', text: 'ciswoman', value: 'ciswoman'},
-	{key: 'cisman', text: 'cisman', value: 'cisman'},
-	{key: 'woman', text: 'woman', value: 'woman'},
-	{key: 'man', text: 'man', value: 'man'},
-	{key: 'transgender', text: 'transgender', value: 'transgender'},
-	{key: 'transwoman', text: 'transwoman', value: 'transwoman'},
-	{key: 'transman', text: 'transman', value: 'transman'},
-	{key: 'androgynous', text: 'androgynous', value: 'androgynous'},
-	{key: 'genderqueer', text: 'genderqueer', value: 'genderqueer'},
-	{key: 'genderselfreported', text: 'genderselfreported', value: 'genderselfreported'}
-]
-
 type Props = FormProps
 
-class PersonComponent extends Component<Props, State> {
+class OrganizationComponent extends Component<Props, State> {
 	render () {
-		const NationalityComponent = ({name}) => (
-			<div>
-				<Grid verticalAlign='middle' columns='equal'>
-					<Grid.Column>
-						<Field
-							inline
-							label="Nationality"
-							name={`${name}.value`}
-							placeholder="Nationality"
-							component={InputField}
-						/>
-					</Grid.Column>
-					<Grid.Column>
-						<Field
-							label='Certainty'
-							name={`${name}.cert`}
-							placeholder='Certainty'
-							options={certaintyOptions}
-							component={DropdownComponent}/>
-					</Grid.Column>
-				</Grid>
-			</div>
-		)
-
-		const OccupationComponent = ({name}) => (
-			<div>
-				<Grid verticalAlign='middle' columns='equal'>
-					<Grid.Column>
-						<Field
-							inline
-							label="Occupation"
-							name={`${name}.value`}
-							placeholder="Occupation"
-							component={InputField}
-						/>
-					</Grid.Column>
-					<Grid.Column>
-						<Field
-							label='Certainty'
-							name={`${name}.cert`}
-							placeholder='Certainty'
-							options={certaintyOptions}
-							component={DropdownComponent}/>
-					</Grid.Column>
-				</Grid>
-			</div>
-		)
-
 		const NamePanels = [
 			{
 				title: 'Standard Name',
@@ -186,10 +126,10 @@ class PersonComponent extends Component<Props, State> {
 						headerLabel="Same As"
 						componentLabel="Same As"
 						RepeatableComponent={EntityLookup}
-						buttonLabel='Add Person'
+						buttonLabel='Add Place'
 						includeCertainty={true}
 						certaintyOptions={certaintyOptions}
-						entityType='person'
+						entityType='place'
 						changeFunc={this.props.change}
 					/>
 				)
@@ -237,28 +177,26 @@ class PersonComponent extends Component<Props, State> {
 							</Grid>
 						</Segment>
 						<Segment>
-							<Field
-								label="Gender"
-								name="description.properties.gender"
-								placeholder="Gender"
-								multiple
-								scrolling
-								options={genderOptions}
-								component={DropdownComponent}
-							/>
+							<Grid columns='equal'>
+								<Grid.Column>
+									<Field
+										label="Organization Type"
+										name="description.properties.orgType.value"
+										placeholder="Organization Type"
+										options={orgTypeOptions}
+										component={DropdownComponent}
+									/>
+								</Grid.Column>
+								<Grid.Column>
+									<Field
+										label='Certainty'
+										name='description.properties.orgType.cert'
+										placeholder='Certainty'
+										options={certaintyOptions}
+										component={DropdownComponent}/>
+								</Grid.Column>
+							</Grid>
 						</Segment>
-						<SegmentRepeater
-							fieldArrayName="description.properties.nationality"
-							headerLabel="Nationality"
-							componentLabel="Nationality"
-							RepeatableComponent={NationalityComponent}
-						/>
-						<SegmentRepeater
-							fieldArrayName="description.properties.occupation"
-							headerLabel="Occupation"
-							componentLabel="Occupation"
-							RepeatableComponent={OccupationComponent}
-						/>
 					</Segment.Group>
 				)
 			},
@@ -293,7 +231,7 @@ class PersonComponent extends Component<Props, State> {
 		return (
 			<Segment basic>
 				<Rail attached position='left'>
-					<Values form='PERSON_FORM'/>
+					<Values form='ORG_FORM'/>
 				</Rail>
 				<Form onSubmit={handleSubmit} error={invalid}>
 					<Header as="h2">
@@ -524,11 +462,11 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({})
 
 const reduxFormConfig = reduxForm({
-	form: 'PERSON_FORM',
+	form: 'ORG_FORM',
 	validate,
 	onSubmit
 })
 
 export default reduxFormConfig(
-	connect(mapStateToProps, mapDispatchToProps)(PersonComponent)
+	connect(mapStateToProps, mapDispatchToProps)(OrganizationComponent)
 )

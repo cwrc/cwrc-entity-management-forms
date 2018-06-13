@@ -38,9 +38,10 @@ function asyncComponentCreator (url) {
 }
 
 function routingFnCreator (useFor: 'sidebar' | 'routing' | 'meta' | 'all' = 'all') {
-	const [AsyncDashoard, AsyncLogin, AsyncPersonEdit, AsyncPlaceEdit, AsyncNotFound] = [
+	const [AsyncDashoard, AsyncLogin, AsyncOrgEdit, AsyncPersonEdit, AsyncPlaceEdit, AsyncNotFound] = [
 		'Dashboard',
 		'Login',
+		'EntityForm/Organization',
 		'EntityForm/Person',
 		'EntityForm/Place',
 		'NotFound'
@@ -89,6 +90,17 @@ function routingFnCreator (useFor: 'sidebar' | 'routing' | 'meta' | 'all' = 'all
 			meta: {
 				name: 'Add a Place',
 				icon: 'world',
+				sidebarVisible: true
+			}
+		},
+		{
+			path: '/organization',
+			exact: true,
+			tag: Route,
+			component: AsyncOrgEdit,
+			meta: {
+				name: 'Add an Organization',
+				icon: 'users',
 				sidebarVisible: true
 			}
 		},

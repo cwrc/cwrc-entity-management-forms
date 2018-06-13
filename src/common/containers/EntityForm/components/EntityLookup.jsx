@@ -16,6 +16,8 @@ import geonames from 'geonames-entity-lookup'
 
 import PublicEntityDialog from 'cwrc-public-entity-dialogs'
 
+PublicEntityDialog.showCreateNewButton(false)
+PublicEntityDialog.showNoLinkButton(false)
 PublicEntityDialog.registerEntitySources({
 	people: (new Map()).set('viaf', viaf).set('wikidata', wikidata).set('getty', getty).set('dbpedia', dbpedia),
 	places: (new Map()).set('geonames', geonames).set('viaf', viaf).set('dbpedia', dbpedia).set('wikidata', wikidata),

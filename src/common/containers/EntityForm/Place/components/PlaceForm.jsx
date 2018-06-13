@@ -15,12 +15,12 @@ import {reduxForm, Field, FieldArray} from 'redux-form'
 import {FormattedMessage} from 'react-intl'
 
 import {InputField, DropdownComponent} from '../../components/FormControls'
+import {DescriptiveNote, ProjectNote} from '../../components/CommonComponents'
 import SegmentRepeater from '../../components/SegmentRepeater'
 import DateRepeater from '../../components/DateRepeater'
 import NameParts from '../../components/NameParts'
 import VariantNames from '../../components/VariantNames'
 import LanguageSelector from '../../components/LanguageSelector'
-import ProjectSelector from '../../components/ProjectSelector'
 import EntityLookup from '../../components/EntityLookup'
 
 import {required} from '../../components/FieldValidation'
@@ -32,6 +32,8 @@ import type {FormProps} from 'redux-form'
 import {createXMLFromPath} from '../../utilities'
 
 // import sampleValues from '../../../../../../static/sample_person'
+
+import countries from '../../../../../../static/countries'
 
 const nameOptions = [
 	{key: '', text: '', value: ''},
@@ -71,10 +73,6 @@ const placeTypeOptions = [
 	{key: '', text: '', value: ''}
 ]
 
-const countryOptions = [
-	{key: '', text: '', value: ''}
-]
-
 const certaintyOptions = [
 	{key: '', text: '', value: ''},
 	{key: 'high', text: 'High', value: 'high'},
@@ -87,53 +85,6 @@ type Props = FormProps
 
 class PlaceComponent extends Component<Props, State> {
 	render () {
-		const DescriptiveNote = ({name}) => (
-			<div>
-				<Grid>
-					<Grid.Row>
-						<Grid.Column width={16}>
-							<LanguageSelector label="Language" name={`${name}.lang`}/>
-						</Grid.Column>
-					</Grid.Row>
-					<Grid.Row>
-						<Grid.Column width={16}>
-							<Field
-								width={10}
-								name={`${name}.value`}
-								component='textarea'
-								rows={3}
-								placeholder="Add your note here."/>
-						</Grid.Column>
-					</Grid.Row>
-				</Grid>
-			</div>
-		)
-
-		const ProjectNote = ({name}) => (
-			<div>
-				<Grid>
-					<Grid.Row>
-						<Grid.Column width={8}>
-							<ProjectSelector label="Project" name={`${name}.project`}/>
-						</Grid.Column>
-						<Grid.Column width={8}>
-							<LanguageSelector label="Language" name={`${name}.lang`}/>
-						</Grid.Column>
-					</Grid.Row>
-					<Grid.Row>
-						<Grid.Column width={16}>
-							<Field
-								width={10}
-								name={`${name}.value`}
-								component='textarea'
-								rows={3}
-								placeholder="Add your note here."/>
-						</Grid.Column>
-					</Grid.Row>
-				</Grid>
-			</div>
-		)
-
 		const NamePanels = [
 			{
 				title: 'Standard Name',
@@ -266,7 +217,9 @@ class PlaceComponent extends Component<Props, State> {
 										label="Country"
 										name="description.location.country.value"
 										placeholder="Country"
-										options={countryOptions}
+										search
+										scrolling
+										options={countries}
 										component={DropdownComponent}
 									/>
 								</Grid.Column>
