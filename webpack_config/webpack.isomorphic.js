@@ -50,7 +50,19 @@ export default {
 			{
 				test: /\.(js|jsx)$/,
 				use: 'babel-loader',
-				exclude: [/node_modules/]
+				// exclude: [/node_modules/]
+				// can't exclude all node_modules because of the cwrc stuff that's written in es6
+				exclude: {
+					test: path.resolve(__dirname, 'node_modules'),
+					exclude: [
+						path.resolve(__dirname, 'node_modules/cwrc-public-entity-dialogs'),
+						path.resolve(__dirname, 'node_modules/dbpedia-entity-lookup'),
+						path.resolve(__dirname, 'node_modules/geonames-entity-lookup'),
+						path.resolve(__dirname, 'node_modules/getty-entity-lookup'),
+						path.resolve(__dirname, 'node_modules/viaf-entity-lookup'),
+						path.resolve(__dirname, 'node_modules/wikidata-entity-lookup')
+					]
+				}
 			},
 			{
 				test: /\.(jpe?g|png|gif|svg)$/,
