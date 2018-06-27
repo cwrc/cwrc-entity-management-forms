@@ -169,7 +169,9 @@ const json2xml = (values) => {
 			for (let bibl of values.sources.bibl) {
 				let biblEl = createXMLFromPath(listBibl, 'bibl')
 				createXMLFromPath(biblEl, 'title', bibl.name)
-				createXMLFromPath(biblEl, `idno[@type="${bibl.type}"]`, bibl.idno)
+				let ref = createXMLFromPath(biblEl, 'ref')
+				ref.setAttribute('source', bibl.type)
+				ref.setAttribute('target', bibl.idno)
 			}
 		}
 	}

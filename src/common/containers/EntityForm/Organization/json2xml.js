@@ -2,7 +2,24 @@ import {createXMLFromPath} from '../utilities'
 
 const json2xml = (values) => {
 	let xml = `<?xml version="1.0" encoding="UTF-8"?>
-	<TEI xmlns="http://www.tei-c.org/ns/1.0"><text><body><listPerson><person></person></listPerson></body></text></TEI>`
+	<TEI xmlns="http://www.tei-c.org/ns/1.0">
+		<teiHeader>
+			<fileDesc>
+				<titleStmt><title></title></titleStmt>
+				<publicationStmt>
+					<publisher>Canadian Writing Research Collaboratory (CWRC)</publisher>
+					<availability><licence target="https://creativecommons.org/licenses/by/4.0/legalcode"><p/></licence></availability>
+				</publicationStmt>
+				<notesStmt><note>Person entity record</note></notesStmt>
+				<sourceDesc><p>born digital</p></sourceDesc>
+			</fileDesc>
+		</teiHeader>
+		<text>
+			<body>
+				<listPerson><person></person></listPerson>
+			</body>
+		</text>
+	</TEI>`
 	let xmlDoc
 	if (window.DOMParser) {
 		const parser = new DOMParser()
@@ -144,7 +161,9 @@ const json2xml = (values) => {
 		for (let bibl of values.sources.bibl) {
 			let biblEl = createXMLFromPath(listBibl, 'bibl')
 			createXMLFromPath(biblEl, 'title', bibl.name)
-			createXMLFromPath(biblEl, `idno[@type="${bibl.type}"]`, bibl.idno)
+			let ref = createXMLFromPath(biblEl, 'ref')
+			ref.setAttribute('source', bibl.type)
+			ref.setAttribute('target', bibl.idno)
 		}
 	}
 	return xmlDoc
