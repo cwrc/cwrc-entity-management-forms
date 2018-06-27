@@ -67,6 +67,8 @@ const renderDatePicker = ({input: {onChange, value}, showTime = false}: any) => 
 	<DateTimePicker
 		onChange={onChange}
 		value={!value ? null : new Date(value)}
+		min={new Date(-3000, 1, 1)}
+		max={new Date(3000, 12, 31)}
 		format='YYYY-MM-DD'
 		placeholder='YYYY-MM-DD'
 		time={showTime}
