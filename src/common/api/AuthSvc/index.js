@@ -1,5 +1,5 @@
 // @flow
-import {post} from 'api/utils'
+import {authpost} from 'api/utils'
 
 export type LoginDataType = {
 	username: string,
@@ -7,5 +7,5 @@ export type LoginDataType = {
 }
 
 export async function loginAPI (data: LoginDataType) {
-	return post('/auth', data)
+	return authpost('/auth', data)
 }

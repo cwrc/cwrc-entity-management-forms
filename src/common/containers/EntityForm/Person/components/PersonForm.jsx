@@ -34,10 +34,29 @@ import Values from '../../components/Values'
 
 import type {FormProps} from 'redux-form'
 
+import {isPersonPostDone,
+	isPersonPostPending,
+	isPersonPostError,
+	getPersonPostError,
+	getPersonPostData,
+
+	isPersonGetDone,
+	isPersonGetPending,
+	isPersonGetError,
+	getPersonGetError,
+	getPersonGetData,
+
+	isPersonPutDone,
+	isPersonPutPending,
+	isPersonPutError,
+	getPersonPutError,
+	getPersonPutData} from 'selectors'
+
 import json2xml from '../json2xml'
 import xml2json from '../xml2json'
 
 import samplePersonDoc from '../samplePerson'
+import {GET_PERSON, PUT_PERSON, POST_PERSON, GET_PLACE, PUT_PLACE, POST_PLACE} from 'actions/entities'
 
 const nameOptions = [
 	{key: '', text: '', value: ''},
@@ -102,6 +121,16 @@ class PersonComponent extends Component<Props, State> {
 	doLoad = () => {
 		let json = xml2json(samplePersonDoc)
 		this.props.dispatch(initialize('PERSON_FORM', json))
+	}
+
+	testGet = () => {
+		console.log('triggered the testGet')
+		this.props.getPerson('23')
+		// AFTER THE GET IS ISSUE, THE STATE WILL GO THROUGH AT LEAST TWO CHANGES:
+		// 1. WHEN THE CALL IS ISSUED, THE STATE AT state.entities.person.get.status changes to 'pending' from 'none'
+		// 2. after the call returns, that status changes to either 'done' or 'error'.  If 'done' then state.entities.person.get.data
+		//    has the returned data.  if 'error', then data has the error.
+		// To get the values from the state, use the selectors that I've mapped to props below in mapStateToProps.
 	}
 
 	render () {
@@ -358,6 +387,7 @@ class PersonComponent extends Component<Props, State> {
 					<div style={{textAlign: 'center'}}>
 						<Button type="button" content="Load Sample Person" icon="cloud download" onClick={() => this.doLoad()}/>
 						<Button content="Submit" icon="sign in" loading={submitting}/>
+						<Button content="Test api get call" icon="cloud download" onClick={this.testGet}/>
 					</div>
 				</Form>
 			</Segment>
@@ -381,14 +411,38 @@ const validate = values => {
 // i.e. model -> view
 const mapStateToProps = state => {
 	return {
-		initialValues: getFormInitialValues('PERSON_FORM')(state)
+		initialValues: getFormInitialValues('PERSON_FORM')(state),
+		isPersonPostDone: isPersonPostDone(state),
+		isPersonPostPending: isPersonPostPending(state),
+		isPersonPostError: isPersonPostError(state),
+		getPersonPostError: getPersonPostError(state),
+		getPersonPostData: getPersonPostData(state),
+
+		isPersonGetDone: isPersonGetDone(state),
+		isPersonGetPending: isPersonGetPending(state),
+		isPersonGetError: isPersonGetError(state),
+		getPersonGetError: getPersonGetError(state),
+		getPersonGetData: getPersonGetData(state),
+
+		isPersonPutDone: isPersonPutDone(state),
+		isPersonPutPending: isPersonPutPending(state),
+		isPersonPutError: isPersonPutError(state),
+		getPersonPutError: getPersonPutError(state),
+		getPersonPutData: getPersonPutData(state)
 	}
 }
 
-// i.e. controller -> model
 const mapDispatchToProps = dispatch => {
 	return {
-	// 	load: (data)
+		async getPerson (id) {
+			return dispatch(GET_PERSON(id))
+		},
+		async putPerson (id) {
+			return dispatch(PUT_PERSON(id))
+		},
+		async postPerson () {
+			return dispatch(POST_PERSON())
+		}
 	}
 }
 

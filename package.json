@@ -43,11 +43,13 @@
     "react-widgets-moment": "^4.0.12",
     "redux": "^3.7.2",
     "redux-form": "^7.2.0",
+    "redux-promise-middleware": "^5.1.1",
     "redux-thunk": "^2.2.0",
     "semantic-ui-css": "^2.2.12",
     "semantic-ui-react": "^0.77.0",
     "serialize-javascript": "^1.4.0",
     "styled-components": "^3.0.0",
+    "type-to-reducer": "^1.1.0",
     "viaf-entity-lookup": "^1.2.2",
     "wikidata-entity-lookup": "^1.2.2"
   },

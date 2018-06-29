@@ -7,8 +7,7 @@ import {
 	Grid,
 	Button,
 	Segment,
-	Rail,
-	Input
+	Rail
 } from 'semantic-ui-react'
 import {connect} from 'react-redux'
 import {reduxForm, Field, FieldArray} from 'redux-form'

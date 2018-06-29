@@ -39,6 +39,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const initialState: GlobalState = window.__INITIAL_STATE__ || {}
+
 const i18n: i18nConfigObject = window.__I18N__ || {}
 const asyncState: Object = window.__ASYNC_STATE__ || {}
 
